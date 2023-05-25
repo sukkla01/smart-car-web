@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Figma, CalendarCheck2, MapPin, User, Database, Car, Check } from "lucide-react";
-import { Switch, Modal, Form, Input, Select, DatePicker, ConfigProvider, TimePicker, Card, Radio } from "antd";
+import { Switch, Modal, Form, Input, Select, DatePicker, ConfigProvider, TimePicker, Card, Radio, notification } from "antd";
 import axios from "axios";
 import config from "../config";
 import * as moment from "moment";
@@ -12,10 +12,13 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/th';
 import locale from 'antd/locale/th_TH';
 import jwt_decode from "jwt-decode";
+import io from "socket.io-client"
 
 const { TextArea } = Input;
 const { Meta } = Card;
 const BASE_URL = config.BASE_URL;
+const socket = io(BASE_URL)
+
 const AdminCar_ = () => {
     const [data, setData] = useState([]);
     const [dataKeeper, setDataKeeper] = useState([]);
@@ -39,6 +42,8 @@ const AdminCar_ = () => {
     const [selectCar, setSelectCar] = useState();
     const [notApprove, setNotApprove] = useState('');
     const [tabFilter, setTabFilter] = useState('waitapprove');
+    const [isConnected, setIsConnected] = useState(socket.connected)
+
 
     const optionsFilter = [
         { label: 'รออนุมัติ', value: 'waitapprove' },
@@ -46,13 +51,44 @@ const AdminCar_ = () => {
         { label: 'ทั้งหมด', value: 'total' },
     ];
 
+    const openNotificationWithIconSuccess = (type) => {
+        notification[type]({
+            message: "แจ้งเตือน",
+            description: "มีรายการจองรถใหม่หรือแก้ไข",
+            duration: 5000,
+            style: { backroundColor: "#164E63" },
+        });
+    };
 
     useEffect(() => {
         getReserveAll()
         getKeeperAll()
         getCarAll()
+        // onChangeFilter(tabFilter)
+        // ------------------------------------------------------------------------------------------------- START CONNECT SOCKET
+        socket.on("connect", () => {
+            setIsConnected(true)
+        })
+
+        socket.on("disconnect", () => {
+            setIsConnected(false)
+        })
+        // ------------------------------------------------------------------------------------------------- END CONNECT SOCKET
+
+        socket.on("user-add-reserve", (data) => {
+            setTabFilter('waitapprove')
+            getReserveAll('waitapprove')
+            // console.log(data)
+            AlertNoti()
+            
+        })
 
     }, []);
+
+    const AlertNoti =()=>{
+        openNotificationWithIconSuccess('success')
+        console.log('cc')
+    }
 
     const getCarAll = async () => {
         const token = localStorage.getItem("token");
@@ -64,10 +100,11 @@ const AdminCar_ = () => {
             console.log(error)
         }
     }
-    const getReserveAll = async () => {
+    const getReserveAll = async (value) => {
         const token = localStorage.getItem("token");
+        let tmp_value = value == 'waitapprove' ? value : tabFilter
         try {
-            let res = await axios.get(`${BASE_URL}/get-reserve-approve/waitapprove`, { headers: { "token": token } })
+            let res = await axios.get(`${BASE_URL}/get-reserve-approve/${tmp_value}`, { headers: { "token": token } })
             setData(res.data)
         } catch (error) {
             console.log(error)
@@ -115,7 +152,6 @@ const AdminCar_ = () => {
         setFormData({ ...formData, end_date: dateString })
     }
     const onSelectKeeper = (id) => {
-        console.log(id)
         setFormData({ ...formData, keeper: id })
     }
 
@@ -144,6 +180,8 @@ const AdminCar_ = () => {
             let res = await axios.post(`${BASE_URL}/add-approve-admin`, data, { headers: { "token": token } })
             setOpen(false)
             getReserveAll()
+            socket.emit('admin-approve')
+
         } catch (error) {
             console.log(error)
         }
@@ -196,11 +234,12 @@ const AdminCar_ = () => {
             approve_status: "N",
             staff: decoded.username
         }
-        console.log(data)
         try {
             let res = await axios.post(`${BASE_URL}/add-notapprove-admin`, data, { headers: { "token": token } })
             setOpen3(false)
             getReserveAll()
+            socket.emit('admin-approve')
+
         } catch (error) {
             console.log(error)
         }
@@ -316,7 +355,7 @@ const AdminCar_ = () => {
                                 <div className="dropdown">
                                     <a className="dropdown-toggle w-5 h-5 block" href="javascript:;" aria-expanded="false" data-tw-toggle="dropdown"> <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" icon-name="more-horizontal" data-lucide="more-horizontal" className="lucide lucide-more-horizontal w-5 h-5 text-slate-500"><circle cx={12} cy={12} r={1} /><circle cx={19} cy={12} r={1} /><circle cx={5} cy={12} r={1} /></svg> </a>
                                     <div className="dropdown-menu w-56">
-                                       
+
                                     </div>
                                 </div>
                             </div>
@@ -628,7 +667,6 @@ const AdminCar_ = () => {
                         {dataCar.map((itemCar, i) => {
                             return <div className="mt-5">
                                 <div className="intro-x" onClick={() => {
-                                    console.log(itemCar)
                                     setSelectCar(itemCar.no)
                                     setFormData({ ...formData, no_car: itemCar.no_car, car_id: itemCar.no })
                                 }}>

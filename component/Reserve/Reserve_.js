@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CalendarCheck2, Plus, Trash, ClipboardEdit, MoreHorizontal } from "lucide-react";
+import { MapPin, User, Database, Car, Check } from "lucide-react";
 import {
     Button,
     Modal,
@@ -19,6 +20,7 @@ import locale from 'antd/locale/th_TH';
 import config from "../../config";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
+import io from "socket.io-client"
 
 const { TextArea } = Input;
 
@@ -26,15 +28,18 @@ const { TextArea } = Input;
 
 
 const BASE_URL = config.BASE_URL;
+const socket = io(BASE_URL)
 
 const Reserve_ = () => {
-    const [dataHistory, setDataHistory] = useState([1]);
+    const [dataHistory, setDataHistory] = useState([]);
     const [DataDept, setDataDept] = useState([]);
     const [DataTname, setDataTname] = useState([]);
     const [DataPosition, setDataPosition] = useState([]);
     const [formData, setFormData] = useState({ id: null, username: null, dept: null, position: null, tcount: '', location: '', start_date: null, start_time: null, end_date: null, end_time: null, detail: '', staff: '' });
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
+    const [data, setData] = useState([1]);
+    const [isConnected, setIsConnected] = useState(socket.connected)
 
 
     useEffect(() => {
@@ -42,6 +47,23 @@ const Reserve_ = () => {
         getDept()
         getTname()
         getPosition()
+
+        // ------------------------------------------------------------------------------------------------- START CONNECT SOCKET
+        socket.on("connect", () => {
+            setIsConnected(true)
+        })
+
+        socket.on("disconnect", () => {
+            setIsConnected(false)
+        })
+        // ------------------------------------------------------------------------------------------------- END CONNECT SOCKET
+
+        socket.on("add-approve-admin", () => {
+            console.log('xxx')
+            getReserve()
+            openNotificationApprove('success')
+        })
+
     }, []);
 
 
@@ -53,6 +75,16 @@ const Reserve_ = () => {
             style: { backroundColor: "#164E63" },
         });
     };
+
+    const openNotificationApprove = (type) => {
+        notification[type]({
+            message: "แจ้งเตือน",
+            description: "มีรายการถูกอนุมัติแล้ว",
+            duration: 5000,
+            style: { backroundColor: "#164E63" },
+        });
+    };
+
 
     const getReserve = async () => {
         const token = localStorage.getItem("token");
@@ -155,6 +187,7 @@ const Reserve_ = () => {
             onReset()
             setOpen(false)
             getReserve()
+            socket.emit('user-reserve')
         } catch (error) {
             console.log(error);
         }
@@ -178,6 +211,7 @@ const Reserve_ = () => {
             });
             openNotificationWithIconSuccess('success')
             getReserve()
+            socket.emit('user-reserve')
         } catch (error) {
             console.log(error);
         }
@@ -207,8 +241,21 @@ const Reserve_ = () => {
     }
 
     const onDetail = async (id) => {
-        setOpen2(true)
+        const token = localStorage.getItem("token");
+        try {
+            let res = await axios.get(`${BASE_URL}/get-approve-detail/${id}`, {
+                headers: { token: token },
+            });
+            setData(res.data)
+            setOpen2(true)
+            // console.log(res.data[0])
+        } catch (error) {
+            console.log(error);
+        }
+
     }
+
+
 
     return (
         <div className="intro-y    h-10">
@@ -565,8 +612,80 @@ const Reserve_ = () => {
             >
                 <div className="modal-body " style={{ marginTop: -30 }}>
                     <div className="intro-y  px-5 pt-0 ">
+                        {data.length > 0 ?
+                            <div className="intro-y col-span-12 md:col-span-3 zoom-in mt-5">
+                                <div className="intro-y box mt-5 lg:mt-0">
+                                    <div className="relative flex items-center p-5" style={{ backgroundColor: 'white', borderRadius: 10 }}>
+                                        <div className="w-12 h-12 image-fit">
+                                            <img alt="Midone - HTML Admin Template" src={BASE_URL + '/' + data[0].image_car} data-action="zoom" className="w-full rounded-md" />
+                                        </div>
+                                        <div className="ml-4 mr-auto">
+                                            <div className="font-medium text-base">{data[0].type_car}</div>
+                                            <div className="text-slate-500">{data[0].no_car}</div>
+                                        </div>
+                                        <div className="dropdown">
+                                            <a className="dropdown-toggle w-5 h-5 block" href="javascript:;" aria-expanded="false" data-tw-toggle="dropdown"> <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" icon-name="more-horizontal" data-lucide="more-horizontal" className="lucide lucide-more-horizontal w-5 h-5 text-slate-500"><circle cx={12} cy={12} r={1} /><circle cx={19} cy={12} r={1} /><circle cx={5} cy={12} r={1} /></svg> </a>
+                                            <div className="dropdown-menu w-56">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="p-5 border-t border-slate-200/60 dark:border-darkmode-400">
+                                        <div className="flex flex-col sm:flex-row items-center">
+                                            <div className="mr-auto">
+                                                <a className="flex items-center text-primary font-medium" href>
+                                                    <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลาเดินทาง </a>
+                                            </div>
+                                            <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                <div className="bg-warning/ text-warning rounded px-2 mr-1">{moment(data[0].start_date).format("DD/MM/") + (parseInt(moment(data[0].start_date).format("YYYY")) + 543)}  {data[0].start_time}</div>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row items-center mt-2">
+                                            <div className="mr-auto">
+                                                <a className="flex items-center text-primary font-medium" href>
+                                                    <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลากลับ </a>
+                                            </div>
+                                            <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                <div className=" text-success rounded px-2 mr-1">{moment(data[0].end_date).format("DD/MM/") + (parseInt(moment(data[0].end_date).format("YYYY")) + 543)}  {data[0].end_time} </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row items-center mt-2">
+                                            <div className="mr-auto">
+                                                <a className="flex items-center text-primary font-medium" href>
+                                                    <User className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> จำนวนคนทั้งหมด </a>
+                                            </div>
+                                            <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                <div className="bg-danger text-white rounded px-2 mr-1">{data[0].tcount} คน</div>
+
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row items-center mt-2">
+                                            <div className="mr-auto">
+                                                <a className="flex items-center text-primary font-medium" href>
+                                                    <MapPin className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> สถานที่ </a>
+                                            </div>
+
+                                        </div>
+                                        <div className="mt-1 ml-6" style={{ color: 'grey', fontWeight: 2 }}>{data[0].location} </div>
+                                        <div className="flex flex-col sm:flex-row items-center mt-2">
+                                            <div className="mr-auto">
+                                                <a className="flex items-center text-primary font-medium" href>
+                                                    <Database className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> รายละเอียด </a>
+                                            </div>
+
+                                        </div>
+                                        <div className="mt-1 ml-6" style={{ color: 'grey', fontWeight: 2 }}>
+                                            {data[0].detail}
+                                        </div>
 
 
+
+                                    </div>
+
+
+                                </div>
+
+                            </div> : ''}
 
 
 
