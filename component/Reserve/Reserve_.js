@@ -11,7 +11,7 @@ import {
     TimePicker,
     Input,
     Popconfirm,
-    Badge
+    Badge, Row, Col, Timeline
 } from "antd";
 import * as moment from "moment";
 import dayjs from 'dayjs';
@@ -58,10 +58,16 @@ const Reserve_ = () => {
         })
         // ------------------------------------------------------------------------------------------------- END CONNECT SOCKET
 
-        socket.on("add-approve-admin", () => {
-            console.log('xxx')
-            getReserve()
-            openNotificationApprove('success')
+        socket.on("add-approve-boss-admin", (data) => {
+            const token = localStorage.getItem("token");
+            const decoded = jwt_decode(token);
+
+            if (decoded.dept == data) {
+                console.log('xxx')
+                getReserve()
+                openNotificationApprove('success')
+            }
+
         })
 
     }, []);
@@ -90,8 +96,9 @@ const Reserve_ = () => {
         const token = localStorage.getItem("token");
         const decoded = jwt_decode(token);
         setFormData({ ...formData, staff: decoded.username })
+        console.log(decoded.dept)
         try {
-            let res = await axios.get(`${BASE_URL}/get-reserve-car-user/${decoded.username}`, {
+            let res = await axios.get(`${BASE_URL}/get-reserve-car-user/${decoded.dept}`, {
                 headers: { token: token },
             });
             setDataHistory(res.data)
@@ -187,7 +194,7 @@ const Reserve_ = () => {
             onReset()
             setOpen(false)
             getReserve()
-            socket.emit('user-reserve')
+            socket.emit('user-reserve', formData.dept)
         } catch (error) {
             console.log(error);
         }
@@ -344,10 +351,10 @@ const Reserve_ = () => {
                         <span className="mr-2"> วันที่นัด</span>
                       </div>
                     </td> */}
-                                    <td className="text-right w-40 " onClick={item.approve_status == null ? console.log('not') : () => onDetail(item.id)}>
-                                        <span className="text-sm"> {item.no_car == null ? '' : <><Badge status="success" text=" " />{item.type_car}</>}   </span>
+                                    <td className="text-right w-40 " onClick={() => onDetail(item.id)}>
+                                        <span className="text-sm"> {item.boss_admin == null ? '' : <><Badge status="success" text=" " />{item.type_car}</>}   </span>
                                         <div className="text-slate-500   whitespace-nowrap mt-0.5">
-                                            {item.approve_status == null ? <><Badge status="warning" text=" " /><span className="mr-0 text-warning"> รออนุมัติ</span></> :
+                                            {item.boss_admin == null ? <><Badge status="warning" text=" " /><span className="mr-0 text-warning"> รออนุมัติ</span></> :
                                                 item.approve_status == 'Y' ?
                                                     <button className="btn btn-sm btn-primary  "><div>{item.no_car}</div></button> :
                                                     <> <Badge status="error" text=" " /><span className="mr-0 text-danger"> ไม่อนุมัติ</span></>
@@ -611,85 +618,128 @@ const Reserve_ = () => {
                 cancelText="ยกเลิก"
             >
                 <div className="modal-body " style={{ marginTop: -30 }}>
-                    <div className="intro-y  px-5 pt-0 ">
-                        {data.length > 0 ?
+                    <Row className="mt-5">
+                        <Col span={12}>
+                            <div className="intro-y  px-5 pt-0 ">
+                                {data.length > 0 ? data[0].boss_admin_date == null ?
+                                    <div className="text-warning" style={{ fontSize : 30,textAlign : 'center',marginTop : 30 }}>รออนุมัติ</div> 
+                                    :
+                                    <div className="intro-y col-span-12 md:col-span-3 zoom-in mt-5">
+                                        <div className="intro-y box mt-5 lg:mt-0">
+                                            <div className="relative flex items-center p-5" style={{ backgroundColor: 'white', borderRadius: 10 }}>
+                                                <div className="w-12 h-12 image-fit">
+                                                    <img alt="Midone - HTML Admin Template" src={BASE_URL + '/' + data[0].image_car} data-action="zoom" className="w-full rounded-md" />
+                                                </div>
+                                                <div className="ml-4 mr-auto">
+                                                    <div className="font-medium text-base">{data[0].type_car}</div>
+                                                    <div className="text-slate-500">{data[0].no_car}</div>
+                                                </div>
+                                                <div className="dropdown">
+                                                    <a className="dropdown-toggle w-5 h-5 block" href="javascript:;" aria-expanded="false" data-tw-toggle="dropdown"> <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" icon-name="more-horizontal" data-lucide="more-horizontal" className="lucide lucide-more-horizontal w-5 h-5 text-slate-500"><circle cx={12} cy={12} r={1} /><circle cx={19} cy={12} r={1} /><circle cx={5} cy={12} r={1} /></svg> </a>
+                                                    <div className="dropdown-menu w-56">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="p-5 border-t border-slate-200/60 dark:border-darkmode-400">
+                                                <div className="flex flex-col sm:flex-row items-center">
+                                                    <div className="mr-auto">
+                                                        <a className="flex items-center text-primary font-medium" href>
+                                                            <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลาเดินทาง </a>
+                                                    </div>
+                                                    <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                        <div className="bg-warning/ text-warning rounded px-2 mr-1">{moment(data[0].start_date).format("DD/MM/") + (parseInt(moment(data[0].start_date).format("YYYY")) + 543)}  {data[0].start_time}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col sm:flex-row items-center mt-2">
+                                                    <div className="mr-auto">
+                                                        <a className="flex items-center text-primary font-medium" href>
+                                                            <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลากลับ </a>
+                                                    </div>
+                                                    <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                        <div className=" text-success rounded px-2 mr-1">{moment(data[0].end_date).format("DD/MM/") + (parseInt(moment(data[0].end_date).format("YYYY")) + 543)}  {data[0].end_time} </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col sm:flex-row items-center mt-2">
+                                                    <div className="mr-auto">
+                                                        <a className="flex items-center text-primary font-medium" href>
+                                                            <User className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> จำนวนคนทั้งหมด </a>
+                                                    </div>
+                                                    <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                        <div className="bg-danger text-white rounded px-2 mr-1">{data[0].tcount} คน</div>
+
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col sm:flex-row items-center mt-2">
+                                                    <div className="mr-auto">
+                                                        <a className="flex items-center text-primary font-medium" href>
+                                                            <MapPin className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> สถานที่ </a>
+                                                    </div>
+
+                                                </div>
+                                                <div className="mt-1 ml-6" style={{ color: 'grey', fontWeight: 2 }}>{data[0].location} </div>
+                                                <div className="flex flex-col sm:flex-row items-center mt-2">
+                                                    <div className="mr-auto">
+                                                        <a className="flex items-center text-primary font-medium" href>
+                                                            <Database className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> รายละเอียด </a>
+                                                    </div>
+
+                                                </div>
+                                                <div className="mt-1 ml-6" style={{ color: 'grey', fontWeight: 2 }}>
+                                                    {data[0].detail}
+                                                </div>
+
+
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div> : ''}
+
+
+
+                            </div>
+
+                        </Col>
+                        <Col span={12}>
                             <div className="intro-y col-span-12 md:col-span-3 zoom-in mt-5">
-                                <div className="intro-y box mt-5 lg:mt-0">
-                                    <div className="relative flex items-center p-5" style={{ backgroundColor: 'white', borderRadius: 10 }}>
-                                        <div className="w-12 h-12 image-fit">
-                                            <img alt="Midone - HTML Admin Template" src={BASE_URL + '/' + data[0].image_car} data-action="zoom" className="w-full rounded-md" />
-                                        </div>
-                                        <div className="ml-4 mr-auto">
-                                            <div className="font-medium text-base">{data[0].type_car}</div>
-                                            <div className="text-slate-500">{data[0].no_car}</div>
-                                        </div>
-                                        <div className="dropdown">
-                                            <a className="dropdown-toggle w-5 h-5 block" href="javascript:;" aria-expanded="false" data-tw-toggle="dropdown"> <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" icon-name="more-horizontal" data-lucide="more-horizontal" className="lucide lucide-more-horizontal w-5 h-5 text-slate-500"><circle cx={12} cy={12} r={1} /><circle cx={19} cy={12} r={1} /><circle cx={5} cy={12} r={1} /></svg> </a>
-                                            <div className="dropdown-menu w-56">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="p-5 border-t border-slate-200/60 dark:border-darkmode-400">
-                                        <div className="flex flex-col sm:flex-row items-center">
-                                            <div className="mr-auto">
-                                                <a className="flex items-center text-primary font-medium" href>
-                                                    <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลาเดินทาง </a>
-                                            </div>
-                                            <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
-                                                <div className="bg-warning/ text-warning rounded px-2 mr-1">{moment(data[0].start_date).format("DD/MM/") + (parseInt(moment(data[0].start_date).format("YYYY")) + 543)}  {data[0].start_time}</div>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col sm:flex-row items-center mt-2">
-                                            <div className="mr-auto">
-                                                <a className="flex items-center text-primary font-medium" href>
-                                                    <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลากลับ </a>
-                                            </div>
-                                            <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
-                                                <div className=" text-success rounded px-2 mr-1">{moment(data[0].end_date).format("DD/MM/") + (parseInt(moment(data[0].end_date).format("YYYY")) + 543)}  {data[0].end_time} </div>
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col sm:flex-row items-center mt-2">
-                                            <div className="mr-auto">
-                                                <a className="flex items-center text-primary font-medium" href>
-                                                    <User className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> จำนวนคนทั้งหมด </a>
-                                            </div>
-                                            <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
-                                                <div className="bg-danger text-white rounded px-2 mr-1">{data[0].tcount} คน</div>
-
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col sm:flex-row items-center mt-2">
-                                            <div className="mr-auto">
-                                                <a className="flex items-center text-primary font-medium" href>
-                                                    <MapPin className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> สถานที่ </a>
-                                            </div>
-
-                                        </div>
-                                        <div className="mt-1 ml-6" style={{ color: 'grey', fontWeight: 2 }}>{data[0].location} </div>
-                                        <div className="flex flex-col sm:flex-row items-center mt-2">
-                                            <div className="mr-auto">
-                                                <a className="flex items-center text-primary font-medium" href>
-                                                    <Database className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> รายละเอียด </a>
-                                            </div>
-
-                                        </div>
-                                        <div className="mt-1 ml-6" style={{ color: 'grey', fontWeight: 2 }}>
-                                            {data[0].detail}
-                                        </div>
+                                <div className="intro-y box mt-5 lg:mt-0 mr-5 ml-5">
+                                    <div className="text-xl mb-5">Timeline</div>
+                                    {console.log(data)}
+                                    {data.length > 0 ?
+                                        <ConfigProvider locale={locale}>
+                                            <Timeline
+                                                items={[
+                                                    {
+                                                        color: 'green',
+                                                        children: 'บันทึกการจองเรียบร้อยแล้ว',
+                                                    },
+                                                    {
+                                                        color: `${data[0].boss_dept_date == null ? 'grey' : 'green'}`,
+                                                        children: `${data[0].boss_dept_date == null ? 'รอหัวหน้าแผนกอนุมัติ' : 'หัวหน้าแผนกอนุมัติแล้ว ' + moment(data[0].boss_dept_date).format("DD/MM/") + (parseInt(moment(data[0].boss_dept_date).format("YYYY")) + 543) + " " + moment(data[0].boss_dept_date).format("HH:mm") + " น."}   `,
+                                                    },
+                                                    {
+                                                        color: `${data[0].admin_approve_date == null ? 'grey' : 'green'}`,
+                                                        children: `${data[0].admin_approve_date == null ? 'รอเจ้าหน้าที่รับการจอง' : 'เจ้าหน้าที่รับการจองแล้ว ' + moment(data[0].admin_approve_date).format("DD/MM/") + (parseInt(moment(data[0].admin_approve_date).format("YYYY")) + 543) + " " + moment(data[0].admin_approve_date).format("HH:mm") + " น."}   `,
+                                                    },
+                                                    {
+                                                        color: `${data[0].boss_admin_date == null ? 'grey' : 'green'}`,
+                                                        children: `${data[0].boss_admin_date == null ? 'รอหัวหน้าเจ้าหน้าที่อนุมัติ' : 'หัวหน้าเจ้าหน้าที่อนุมัติแล้ว ' + moment(data[0].boss_admin_date).format("DD/MM/") + (parseInt(moment(data[0].boss_admin_date).format("YYYY")) + 543) + " " + moment(data[0].boss_admin_date).format("HH:mm") + " น."}   `,
+                                                    },
+                                                    {
+                                                        color: `${data[0].boss_admin_date == null ? 'grey' : 'green'}`,
+                                                        children: 'เสร็จสิ้น',
+                                                    },
 
 
-
-                                    </div>
-
-
+                                                ]}
+                                            /></ConfigProvider> : ''}
                                 </div>
-
-                            </div> : ''}
-
-
-
-                    </div>
+                            </div>
+                        </Col>
+                    </Row>
 
 
                 </div>

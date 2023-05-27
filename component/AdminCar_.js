@@ -75,7 +75,7 @@ const AdminCar_ = () => {
         })
         // ------------------------------------------------------------------------------------------------- END CONNECT SOCKET
 
-        socket.on("user-add-reserve", (data) => {
+        socket.on("boss-dept-add-approve", (data) => {
             setTabFilter('waitapprove')
             getReserveAll('waitapprove')
             // console.log(data)

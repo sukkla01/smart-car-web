@@ -11,6 +11,8 @@ import {
   Tag,
   Car,
   Figma,
+  Codesandbox,
+  UserCheck
 } from "lucide-react";
 import Link from "next/link";
 import jwt_decode from "jwt-decode";
@@ -93,6 +95,23 @@ const Menu_ = () => {
             <div className="top-menu__title">จองรถ</div>
           </a>
         </li>
+        <li onClick={() => onSelect(10, '/boss-dept')}>
+          <a
+            href="#"
+            className={selectId == 10 ? "top-menu top-menu--active" : "top-menu"}
+          >
+            <div className="top-menu__icon">
+              <Codesandbox
+                className="top-menu__sub-icon"
+                color="#164E63"
+                size={24}
+              />
+            </div>
+            <div className="top-menu__title">
+              หัวหน้าแผนก
+            </div>
+          </a>
+        </li>
         <li onClick={() => onSelect(3, '/admin-car')}>
           <a
             href="#"
@@ -107,6 +126,24 @@ const Menu_ = () => {
             </div>
             <div className="top-menu__title">
               จัดการจองรถ
+            </div>
+          </a>
+        </li>
+        
+        <li onClick={() => onSelect(11, '/boss-admin')}>
+          <a
+            href="#"
+            className={selectId == 11 ? "top-menu top-menu--active" : "top-menu"}
+          >
+            <div className="top-menu__icon">
+              <UserCheck
+                className="top-menu__sub-icon"
+                color="#164E63"
+                size={24}
+              />
+            </div>
+            <div className="top-menu__title">
+              หัวหน้า
             </div>
           </a>
         </li>
