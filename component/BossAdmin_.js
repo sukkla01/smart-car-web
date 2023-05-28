@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Figma, CalendarCheck2, MapPin, User, Database, Codesandbox, UserCheck } from "lucide-react";
+import { Figma, CalendarCheck2, MapPin, User, Database, Codesandbox, UserCheck,Check } from "lucide-react";
 import { Switch, Modal, Form, Input, Select, DatePicker, Popconfirm, TimePicker, Card, Radio, notification } from "antd";
 import axios from "axios";
 import config from "../config";
@@ -249,12 +249,12 @@ const BossAdmin_ = () => {
                                         cancelText="ออก"
                                     >
                                         <button type="button" className={` btn btn${item.boss_admin == null ? '-outline-success' : '-success'}  `} style={{ width: '100%' }}>
-                                            <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
+                                            <Check className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
                                             <div>อนุมัติ</div>
                                         </button>
                                     </Popconfirm> :
                                     <button type="button" className={` btn btn${item.boss_admin == null ? '-outline-success' : '-success'}  `} style={{ width: '100%' }}>
-                                        <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
+                                        <Check className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
                                         <div>อนุมัติ</div>
                                     </button>}
                             </div>

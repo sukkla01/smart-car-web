@@ -248,12 +248,12 @@ const BossDept_ = () => {
                                         cancelText="ออก"
                                     >
                                         <button type="button" className={` btn btn${item.boss_dept == null ? '-outline-success' : '-success'}  `} style={{ width: '100%' }}>
-                                            <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
+                                            <Check className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
                                             <div>อนุมัติ</div>
                                         </button>
                                     </Popconfirm> :
                                     <button type="button" className={` btn btn${item.boss_dept == null ? '-outline-success' : '-success'}  `} style={{ width: '100%' }}>
-                                        <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
+                                        <Check className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
                                         <div>อนุมัติ</div>
                                     </button>}
                             </div>

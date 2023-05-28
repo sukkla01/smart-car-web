@@ -6,9 +6,11 @@ import config from "../../config";
 
 const BASE_URL = config.BASE_URL;
 
+
 const Users_ = () => {
   const [data, setData] = useState([]);
   const [dataDept, setDataDept] = useState([]);
+  const [dataRole, setDataRole] = useState([]);
   const [open, setOpen] = useState(false);
   const [clickStatus, setclickStatus] = useState('');
   const [formData, setFormData] = useState({
@@ -18,13 +20,14 @@ const Users_ = () => {
     cid: "",
     status: true,
     tel: "",
-    dept: null,
+    dept: [],
     role: null
   });
 
   useEffect(() => {
     getUsersAll();
     getDeptAll();
+    getRoleAll()
   }, []);
 
   const getUsersAll = async () => {
@@ -46,6 +49,17 @@ const Users_ = () => {
         headers: { token: token },
       });
       setDataDept(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getRoleAll = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      let res = await axios.get(`${BASE_URL}/get-role`, {
+        headers: { token: token },
+      });
+      setDataRole(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -114,7 +128,7 @@ const Users_ = () => {
         cid: res.data[0].cid,
         status: res.data[0].status == 1 ? true : false,
         // tel: "",
-        dept: res.data[0].dept,
+        dept: res.data[0].dept.split(',').map(Number),
         role: res.data[0].role,
       });
     } catch (error) {
@@ -148,7 +162,7 @@ const Users_ = () => {
       cid: "",
       status: true,
       // tel: "",
-      dept: null,
+      dept: [],
       role: null,
     });
   };
@@ -333,19 +347,20 @@ const Users_ = () => {
                   />
                 </Form.Item>
                 <Form.Item label="หน่วยงาน">
-
                   <Select
                     mode="multiple"
                     style={{ width: '100%' }}
                     placeholder=""
                     // defaultValue={[1, 2]}
                     onChange={onSelectDept}
-                    optionLabelProp="label"
+                    // optionLabelProp="label"
+                    optionFilterProp="children"
                     value={formData.dept}
+                   
                   >
                     {dataDept.map((item, i) => {
                       return (
-                        <Option value={item.id} label={item.name}>
+                        <Option value={item.id} key={i}>
                           <Space>
                             {item.name}
                           </Space>
@@ -365,12 +380,13 @@ const Users_ = () => {
                   //     .includes(input.toLowerCase())
                   // }
                   >
-                    <Select.Option key={1} value={'admin'}>
-                      {'admin'}
-                    </Select.Option>
-                    <Select.Option key={2} value={'general'}>
-                      {'general'}
-                    </Select.Option>
+                    {dataRole.map((itemRole, i) => {
+                      return <Select.Option key={i} value={itemRole.value}>
+                        {itemRole.name}
+                      </Select.Option>
+                    })}
+
+
                   </Select>
                 </Form.Item>
 

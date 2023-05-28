@@ -23,13 +23,20 @@ const Menu_ = () => {
   const [ActiveText, setIsActiveText] = useState("");
   const [isShowMenu, setIsShowMenu] = useState(true);
 
+  const [role, setRole] = useState('');
 
   useEffect(() => {
     setSelectId(localStorage.getItem("NavId"));
     const token = localStorage.getItem("token");
-    const decoded = jwt_decode(token);
-    // setIsShowMenu(decoded.role == 'admin' ? true : false)
+
+    if (!(token == null || token == undefined)) {
+      const decoded = jwt_decode(token);
+      setRole(decoded.role)
+    }
+
   }, []);
+
+
 
   const onSelect = (id, path) => {
     localStorage.setItem("NavId", id);
@@ -129,7 +136,7 @@ const Menu_ = () => {
             </div>
           </a>
         </li>
-        
+
         <li onClick={() => onSelect(11, '/boss-admin')}>
           <a
             href="#"
@@ -147,7 +154,7 @@ const Menu_ = () => {
             </div>
           </a>
         </li>
-        {isShowMenu ?
+        {role == 'admin' || role == 'superadmin' ?
           <li>
             <a href="#" className={selectId == 4 ? "top-menu top-menu--active" : "top-menu"}>
               <div className="top-menu__icon">

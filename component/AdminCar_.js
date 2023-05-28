@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Figma, CalendarCheck2, MapPin, User, Database, Car, Check } from "lucide-react";
+import { Figma, CalendarCheck2, MapPin, User, Database, Car, Check, XCircle } from "lucide-react";
 import { Switch, Modal, Form, Input, Select, DatePicker, ConfigProvider, TimePicker, Card, Radio, notification } from "antd";
 import axios from "axios";
 import config from "../config";
@@ -80,12 +80,12 @@ const AdminCar_ = () => {
             getReserveAll('waitapprove')
             // console.log(data)
             AlertNoti()
-            
+
         })
 
     }, []);
 
-    const AlertNoti =()=>{
+    const AlertNoti = () => {
         openNotificationWithIconSuccess('success')
         console.log('cc')
     }
@@ -189,20 +189,30 @@ const AdminCar_ = () => {
     }
 
     const onApprove = async (id) => {
-        setFormData({
-            id: null,
-            head_id: id,
-            keeper: null,
-            no_car: "",
-            start_date: null,
-            start_time: null,
-            end_date: null,
-            end_time: null,
-            tcount: null,
-            comment: '',
-            car_id: null
-        })
-        setOpen(true)
+        const token = localStorage.getItem("token");
+        try {
+            let res = await axios.get(`${BASE_URL}/edit-reserve-car/${id}`, { headers: { "token": token } })
+            let d = res.data[0]
+            setFormData({
+                id: null,
+                head_id: id,
+                keeper: null,
+                no_car: "",
+                start_date: dayjs(d.start_date, 'YYYY-MM-DD'),
+                start_time: d.start_time,
+                end_date: dayjs(d.end_date, 'YYYY-MM-DD'),
+                end_time: d.end_time,
+                tcount: d.tcount,
+                comment: d.detail,
+                car_id: null
+            })
+            setOpen(true)
+
+        } catch (error) {
+            console.log(error)
+        }
+
+
     }
 
     const onNotApprove = async (id) => {
@@ -422,7 +432,7 @@ const AdminCar_ = () => {
                                     }
 
                                 }}>
-                                    <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
+                                    <XCircle className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
                                     <div>ไม่อนุมัติ</div>
                                 </button>
                                 <button type="button" className={` btn btn${item.approve_status == 'Y' ? '-success' : '-outline-success'}  ml-auto w-32`} onClick={() => {
@@ -434,7 +444,7 @@ const AdminCar_ = () => {
                                     }
 
                                 }}>
-                                    <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
+                                    <Check className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
                                     <div>อนุมัติ</div>
                                 </button>
 

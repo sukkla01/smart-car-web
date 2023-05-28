@@ -18,9 +18,12 @@ const Header_ = () => {
   // console.log(test)
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const decoded = jwt_decode(token);
-    setIsShowMenu(decoded.role == 'admin' ? true : false)
-    getProfile();
+    if (!(token == null || token == undefined)) {
+      const decoded = jwt_decode(token);
+      setIsShowMenu(decoded.role == 'admin' ? true : false)
+      getProfile();
+    }
+
     // getAlert()
   }, []);
 

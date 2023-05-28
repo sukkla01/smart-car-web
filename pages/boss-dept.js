@@ -3,19 +3,24 @@ import Hoc from '../component/Layout/Hoc'
 import BossDept_ from '../component/BossDept_'
 import Permission_ from '../component/Permission_';
 import jwt_decode from "jwt-decode";
+import { useRouter } from 'next/router'
 
 const BossDept = () => {
   const [role, setRole] = useState('');
+  const router = useRouter()
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const decoded = jwt_decode(token);
-    setRole(decoded.role)
-    console.log(decoded.role)
+    if (token == null || token == undefined) {
+      router.push('/login')
+    } else {
+      const decoded = jwt_decode(token);
+      setRole(decoded.role)
+    }
   }, []);
   return (
     <Hoc>
-      {role == 'boss_dept' || role == 'superadmin' ?
+      {role == 'boss_dept' || role == 'superadmin' || role == ''  ?
         <BossDept_ /> : <Permission_ />}
     </Hoc>
   )
