@@ -6,6 +6,7 @@ import config from "../../config";
 
 const BASE_URL = config.BASE_URL;
 
+const options = [];
 
 const Users_ = () => {
   const [data, setData] = useState([]);
@@ -28,6 +29,14 @@ const Users_ = () => {
     getUsersAll();
     getDeptAll();
     getRoleAll()
+
+    for (let i = 10; i < 36; i++) {
+      options.push({
+        value: i.toString(36) + i,
+        label: i.toString(36) + i,
+      });
+    }
+
   }, []);
 
   const getUsersAll = async () => {
@@ -353,14 +362,14 @@ const Users_ = () => {
                     placeholder=""
                     // defaultValue={[1, 2]}
                     onChange={onSelectDept}
-                    // optionLabelProp="label"
-                    optionFilterProp="children"
+                    optionLabelProp="label"
+                    optionFilterProp="label"
                     value={formData.dept}
-                   
+
                   >
                     {dataDept.map((item, i) => {
                       return (
-                        <Option value={item.id} key={i}>
+                        <Option value={item.id} label={item.name} key={i}>
                           <Space>
                             {item.name}
                           </Space>
@@ -369,6 +378,8 @@ const Users_ = () => {
 
 
                   </Select>
+
+
                 </Form.Item>
                 <Form.Item label="สิทธิ์">
                   <Select
