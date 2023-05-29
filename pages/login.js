@@ -13,7 +13,7 @@ const Login = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (token == null) {
+    if (token == null || token == undefined) {
     } else {
       localStorage.removeItem("token");
       localStorage.setItem("NavId", 1);
