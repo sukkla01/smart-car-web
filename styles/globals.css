@@ -93,7 +93,7 @@ a {
   transition: all 0.2s;
 }
 
-:where(.css-dev-only-do-not-override-15rg2km).ant-picker .ant-picker-input >input {
+:where(.css-dev-only-do-not-override-15rg2km).ant-picker .ant-picker-input>input {
   position: relative;
   display: inline-block;
   width: 100%;
@@ -124,7 +124,7 @@ a {
   font-size: 14px;
   line-height: 22px;
   list-style: none;
-  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   position: relative;
   display: inline-block;
   min-width: 44px;
@@ -138,11 +138,20 @@ a {
   user-select: none;
 }
 
-.zoom-img, .zoom-img-wrap {
+.zoom-img,
+.zoom-img-wrap {
   position: relative;
   z-index: 66666;
   transition: all 300ms;
 }
 
+.ant-select:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-search-input {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  appearance: none;
+  font-family: 'Kanit';
 
-
+}
