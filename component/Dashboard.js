@@ -54,6 +54,10 @@ const Dashboard = () => {
 
 
         // })
+        return () => {
+            socket.off("connect")
+            socket.off("disconnect")
+          }
 
     }, []);
 

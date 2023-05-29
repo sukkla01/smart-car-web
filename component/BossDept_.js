@@ -67,6 +67,11 @@ const BossDept_ = () => {
 
         })
 
+        return () => {
+            socket.off("connect")
+            socket.off("disconnect")
+          }
+
     }, []);
 
     const AlertNoti = () => {

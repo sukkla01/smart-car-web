@@ -83,6 +83,11 @@ const AdminCar_ = () => {
 
         })
 
+        return () => {
+            socket.off("connect")
+            socket.off("disconnect")
+          }
+
     }, []);
 
     const AlertNoti = () => {
@@ -193,14 +198,15 @@ const AdminCar_ = () => {
         try {
             let res = await axios.get(`${BASE_URL}/edit-reserve-car/${id}`, { headers: { "token": token } })
             let d = res.data[0]
+            console.log(moment(d.start_date).format('YYYY-MM-DD'))
             setFormData({
                 id: null,
                 head_id: id,
                 keeper: null,
                 no_car: "",
-                start_date: dayjs(d.start_date, 'YYYY-MM-DD'),
+                start_date: moment(d.start_date).format('YYYY-MM-DD'),
                 start_time: d.start_time,
-                end_date: dayjs(d.end_date, 'YYYY-MM-DD'),
+                end_date: moment(d.start_date).format('YYYY-MM-DD'),
                 end_time: d.end_time,
                 tcount: d.tcount,
                 comment: d.detail,
@@ -265,9 +271,9 @@ const AdminCar_ = () => {
                 head_id: id,
                 keeper: parseInt(d.keeper),
                 no_car: d.no_car,
-                start_date: dayjs(d.start_date, 'YYYY-MM-DD'),
+                start_date: moment(d.start_date).format('YYYY-MM-DD'),
                 start_time: d.start_time,
-                end_date: dayjs(d.end_date, 'YYYY-MM-DD'),
+                end_date: moment(d.start_date).format('YYYY-MM-DD'),
                 end_time: d.end_time,
                 tcount: d.tcount,
                 comment: d.comment,
@@ -288,9 +294,9 @@ const AdminCar_ = () => {
                 head_id: id,
                 keeper: parseInt(d.keeper),
                 no_car: d.no_car,
-                start_date: dayjs(d.start_date, 'YYYY-MM-DD'),
+                start_date: moment(d.start_date).format('YYYY-MM-DD'),
                 start_time: d.start_time,
-                end_date: dayjs(d.end_date, 'YYYY-MM-DD'),
+                end_date: moment(d.start_date).format('YYYY-MM-DD'),
                 end_time: d.end_time,
                 tcount: d.tcount,
                 comment: d.comment,
@@ -482,7 +488,6 @@ const AdminCar_ = () => {
                             // initialValues={{ size: componentSize }}
                             // onValuesChange={onFormLayoutChange}
                             >
-
                                 <div className="col-span-12 lg:col-span-12 mt-5">
                                     <label style={{ marginRight: 27 }}>เลือกรถ &nbsp;&nbsp;&nbsp;&nbsp;</label>
                                     <button class="btn btn btn-outline-danger w-40 mr-2 ml-2" onClick={() => setOpen2(true)}>

@@ -70,6 +70,11 @@ const Reserve_ = () => {
 
         })
 
+        return () => {
+            socket.off("connect")
+            socket.off("disconnect")
+        }
+
     }, []);
 
 
@@ -622,7 +627,7 @@ const Reserve_ = () => {
                         <Col span={12}>
                             <div className="intro-y  px-5 pt-0 ">
                                 {data.length > 0 ? data[0].boss_admin_date == null ?
-                                    <div className="text-warning" style={{ fontSize : 30,textAlign : 'center',marginTop : 30 }}>รออนุมัติ</div> 
+                                    <div className="text-warning" style={{ fontSize: 30, textAlign: 'center', marginTop: 30 }}>รออนุมัติ</div>
                                     :
                                     <div className="intro-y col-span-12 md:col-span-3 zoom-in mt-5">
                                         <div className="intro-y box mt-5 lg:mt-0">
