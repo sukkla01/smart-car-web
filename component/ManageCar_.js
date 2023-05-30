@@ -8,7 +8,7 @@ const BASE_URL = config.BASE_URL;
 
 const ManageCar_ = () => {
   const [data, setData] = useState([]);
-  const [dataDept, setDataDept] = useState([]);
+  const [dataKeeper, setDataKeeper] = useState([]);
   const [open, setOpen] = useState(false);
   const [clickStatus, setclickStatus] = useState('');
   const [formData, setFormData] = useState({
@@ -32,6 +32,7 @@ const ManageCar_ = () => {
 
   useEffect(() => {
     getCarAll()
+    getKeeper()
 
   }, []);
 
@@ -41,6 +42,15 @@ const ManageCar_ = () => {
     try {
       let res = await axios.get(`${BASE_URL}/get-car-all`, { headers: { "token": token } })
       setData(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const getKeeper = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      let res = await axios.get(`${BASE_URL}/get-keeper-all`, { headers: { "token": token } })
+      setDataKeeper(res.data)
     } catch (error) {
       console.log(error)
     }
@@ -113,21 +123,21 @@ const ManageCar_ = () => {
     // // }
 
 
-     // image
-     setFileList(newFileList)
-     let tmp_img = []
-     if (newFileList[0] != null) {
-       // console.log(newFileList[0].type.split('/')[0])
-       if (newFileList[0].type.split("/")[0] == "image") {
-         let NewBase64 = await getBase64(newFileList[0].originFileObj)
+    // image
+    setFileList(newFileList)
+    let tmp_img = []
+    if (newFileList[0] != null) {
+      // console.log(newFileList[0].type.split('/')[0])
+      if (newFileList[0].type.split("/")[0] == "image") {
+        let NewBase64 = await getBase64(newFileList[0].originFileObj)
         //  console.log(NewBase64)
-         tmp_img.push(NewBase64)
-         setImgArr(tmp_img)
+        tmp_img.push(NewBase64)
+        setImgArr(tmp_img)
 
-       } else {
-         console.log(false)
-       }
-     }
+      } else {
+        console.log(false)
+      }
+    }
   }
   const onRemove = async (img) => {
     // setIsRemove(true)
@@ -148,6 +158,10 @@ const ManageCar_ = () => {
     });
   }
 
+
+  const onSelectKeeper = (value) => {
+    setFormData({ ...formData, keeper: value });
+  }
 
   const onReset = () => {
     setFormData({
@@ -252,7 +266,7 @@ const ManageCar_ = () => {
                         </td>
                         <td>{item.no_car}</td>
                         <td>{item.type_car}</td>
-                        <td>{item.keeper}</td>
+                        <td>{item.keeper_name}</td>
                         <td>{item.count_seat}</td>
                         <td>
                           {item.status == 'Y' ? (
@@ -337,13 +351,23 @@ const ManageCar_ = () => {
                   />
                 </Form.Item>
                 <Form.Item label="ผู้ดูแลรถ" rules={[{ required: true }]}>
-                  <Input
+                  <Select
                     value={formData.keeper}
-                    // disabled={clickStatus == 'add' ? false : true}
-                    onChange={(e) => {
-                      setFormData({ ...formData, keeper: e.target.value });
-                    }}
-                  />
+                    onChange={onSelectKeeper}
+                  // filterOption={(input, option) =>
+                  //   (option?.label ?? "")
+                  //     .toLowerCase()
+                  //     .includes(input.toLowerCase())
+                  // }
+                  >
+                    {dataKeeper.map((item, i) => {
+                      return <Select.Option key={i} value={item.id}>
+                        {item.name}
+                      </Select.Option>
+                    })}
+
+
+                  </Select>
                 </Form.Item>
                 <Form.Item label="จำนวนที่นั่ง" rules={[{ required: true }]}>
                   <Input
