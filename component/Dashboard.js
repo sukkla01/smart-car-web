@@ -13,6 +13,8 @@ import 'dayjs/locale/th';
 import locale from 'antd/locale/th_TH';
 import jwt_decode from "jwt-decode";
 import io from "socket.io-client"
+import Chart1 from "./ChartDash/Chart1";
+import Chart2 from "./ChartDash/Chart2";
 
 const { TextArea } = Input;
 const { Meta } = Card;
@@ -57,7 +59,7 @@ const Dashboard = () => {
         return () => {
             socket.off("connect")
             socket.off("disconnect")
-          }
+        }
 
     }, []);
 
@@ -149,7 +151,7 @@ const Dashboard = () => {
                 </div> : ''
             }
 
-            <div className="col-span-12 mt-10">
+            <div className="col-span-12 mt-10" >
                 <div className="intro-y    h-10  mt-10">
                     <div className="flex  ">
                         <Activity className="top-menu__sub-icon " size={32} />
@@ -166,14 +168,14 @@ const Dashboard = () => {
                         return <tr className="intro-x">
                             <td className="w-10">
                                 <div className="flex">
-                                    <div className="w-10 h-10 image-fit zoom-in text-xl">
+                                    <div className="w-10 h-6 image-fit zoom-in text-xl">
                                         {i + 1}
                                     </div>
 
                                 </div>
                             </td>
                             <td>
-                                <a href className="font-medium whitespace-nowrap text-xl">{item.dept_name}</a>
+                                <a href className="font-medium whitespace-nowrap  " style={{ fontSize: 16 }}>{item.dept_name}</a>
                                 {/* <div className="text-slate-500 text-xs whitespace-nowrap mt-0.5">Photography</div> */}
                             </td>
                             {/* <td className="text-center">50</td>
@@ -191,6 +193,27 @@ const Dashboard = () => {
 
                 </tbody>
             </table>
+            <div class="grid grid-cols-12 gap-6 mt-5">
+                <div class="intro-y col-span-12 lg:col-span-6">
+                    <div class="report-box-2 intro-y mt-12 sm:mt-5">
+                        <div class="box ">
+                            <div style={{ paddingLeft: 50, paddingTop: 20, paddingBottom: 20, fontSize: 20 }}>ข้อมูลการขอใช้รถแยกตาม ปี</div>
+                            <Chart2 />
+                        </div>
+                    </div>
+                </div>
+                <div class="intro-y col-span-12 lg:col-span-6">
+                    <div class="report-box-2 intro-y mt-12 sm:mt-5">
+                        <div class="box ">
+                            <div style={{ paddingLeft: 50, paddingTop: 20, paddingBottom: 20, fontSize: 20 }}>ข้อมูลการขอใช้รถแยกตาม เดือน</div>
+                            <Chart1 />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {/* <Chart1 /> */}
 
         </>
 
