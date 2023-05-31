@@ -37,7 +37,7 @@ const Chart2 = () => {
                 data: dataDash
             }],
             options: {
-                color: '#F6A823',
+                colors: '#FF4560',
                 chart: {
                     height: 350,
                     type: 'bar',

@@ -37,10 +37,11 @@ const Chart1 = () => {
                 data: dataDash
             }],
             options: {
-                color: '#F6A823',
+                colors: '#00E396',
                 chart: {
                     height: 350,
                     type: 'bar',
+                   
                 },
                 plotOptions: {
                     bar: {
