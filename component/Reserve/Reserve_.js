@@ -14,6 +14,8 @@ import {
     Badge, Row, Col, Timeline
 } from "antd";
 import * as moment from "moment";
+import "moment/locale/th";
+moment.locale("th");
 import dayjs from 'dayjs';
 import 'dayjs/locale/th';
 import locale from 'antd/locale/th_TH';
