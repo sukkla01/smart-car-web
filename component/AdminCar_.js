@@ -60,6 +60,19 @@ const AdminCar_ = () => {
         });
     };
 
+    
+
+    const openNotificationError = (type) => {
+        notification[type]({
+            message: "แจ้งเตือน",
+            description: "กรุณากรอกข้อมูลให้ครับ",
+            duration: 5000,
+            style: { backroundColor: "#164E63" },
+        });
+    };
+
+
+
     useEffect(() => {
         getReserveAll()
         getKeeperAll()
