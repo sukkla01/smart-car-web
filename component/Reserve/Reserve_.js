@@ -96,12 +96,20 @@ const Reserve_ = () => {
             style: { backroundColor: "#164E63" },
         });
     };
+    const openNotificationError = (type) => {
+        notification[type]({
+            message: "แจ้งเตือน",
+            description: "กรุณากรอกข้อมูลให้ครับ",
+            duration: 5000,
+            style: { backroundColor: "#164E63" },
+        });
+    };
 
 
     const getReserve = async () => {
         const token = localStorage.getItem("token");
         const decoded = jwt_decode(token);
-        setFormData({ ...formData, staff: decoded.username })
+        setFormData({ ...formData, staff: decoded.username, username: decoded.username, dept: decoded.dept })
         console.log(decoded.dept)
         try {
             let res = await axios.get(`${BASE_URL}/get-reserve-car-user/${decoded.dept}`, {
@@ -189,28 +197,43 @@ const Reserve_ = () => {
 
     }
 
+    const onOpenModal = () => {
+        const token = localStorage.getItem("token");
+        const decoded = jwt_decode(token);
+        setFormData({ ...formData, staff: decoded.username, username: decoded.username, dept: decoded.dept })
+        setOpen(true)
+        onReset()
+    }
+
     const onSubmit = async () => {
         const token = localStorage.getItem("token");
-        // console.log(formData)
-        try {
-            let res = await axios.post(`${BASE_URL}/add-reserve-car`, formData, {
-                headers: { token: token },
-            });
-            openNotificationWithIconSuccess('success')
-            onReset()
-            setOpen(false)
-            getReserve()
-            socket.emit('user-reserve', formData.dept)
-        } catch (error) {
-            console.log(error);
+        // const [formData, setFormData] = useState({ id: null, username: null, dept: null, position: null, tcount: '', location: '', start_date: null, start_time: null, end_date: null, end_time: null, detail: '', staff: '' });
+
+        if (formData.username == null || formData.dept == null || formData.position == null || formData.tcount == null ||
+            formData.location == null || formData.start_date == null || formData.start_time == null || formData.end_date == null || formData.end_time == null) {
+                openNotificationError('error')
+        } else {
+            try {
+                let res = await axios.post(`${BASE_URL}/add-reserve-car`, formData, {
+                    headers: { token: token },
+                });
+                openNotificationWithIconSuccess('success')
+                onReset()
+                setOpen(false)
+                getReserve()
+                socket.emit('user-reserve', formData.dept)
+            } catch (error) {
+                console.log(error);
+            }
         }
+
     }
     const onCancelModal = () => {
         setOpen(false)
         onReset()
     }
     const onReset = () => {
-        setFormData({ ...formData, id: null, username: null, dept: null, position: null, tcount: '', location: '', start_date: null, start_time: null, end_date: null, end_time: null, detail: '' })
+        setFormData({ ...formData, id: null, position: null, tcount: '', location: '', start_date: null, start_time: null, end_date: null, end_time: null, detail: '' })
     }
 
     const deleteCar = async (id) => {
@@ -315,13 +338,13 @@ const Reserve_ = () => {
             content: [
                 { text: 'ใบขออนุญาตใช้รถส่วนกลาง', fontSize: 18, alignment: 'center', decoration: 'underline' },
                 // { text: `วันที่....${moment().format('LL').replace('2023', '2566')}.......`, fontSize: 16, alignment: 'right', marginTop: 20 },
-                { layout: pdfMake.tableLayouts.L1, table: { widths: ['60%', '40%'], body: [[{ text: `` }, { text: `วันที่ ${moment().format('LL').replace(y_replace,' พ.ศ. ' + (y_replace + 543))} ` }],] }, marginTop: 20 },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['60%', '40%'], body: [[{ text: `` }, { text: `วันที่ ${moment().format('LL').replace(y_replace, ' พ.ศ. ' + (y_replace + 543))} ` }],] }, marginTop: 20 },
                 { text: `เรียน ผู้อำนวยการโรงพยาบาลศรีสังวรสุโขทัย`, fontSize: 16, alignment: 'left', marginTop: 10 },
                 { layout: pdfMake.tableLayouts.L1, table: { widths: ['*', '*'], body: [[{ text: `ข้าพเจ้า ${d.staff_reserve}` }, { text: `ตำแหน่ง  ${d.position_name}` }],] }, marginTop: 10, marginLeft: 70 },
                 { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `กลุ่มงาน/ฝ่าย  ${d.dept_name}` }, { text: `ขออนุญาตใช้รถไปราชการที่ ${d.location}` }],] } },
                 { layout: pdfMake.tableLayouts.L1, table: { widths: ['75%', '25%'], body: [[{ text: `เพื่อ ${d.detail}` }, { text: `มีคนนั่ง  ${d.tcount}  คน` }],] } },
-                { layout: pdfMake.tableLayouts.L1, table: { widths: ['60%', '40%'], body: [[{ text: `โดยออกเดินทางในวันที่ ${moment(d.start_date).format('LL').replace(y_replace,' พ.ศ. ' + (y_replace + 543))}   ` }, { text: `เวลา ${d.start_time}  น.` }],] } },
-                { layout: pdfMake.tableLayouts.L1, table: { widths: ['60%', '40%'], body: [[{ text: `และจะกลับในวันที่  ${moment(d.end_date).format('LL').replace(y_replace,' พ.ศ. ' + (y_replace + 543))}` }, { text: `เวลา  ${d.end_time}  น.` }],] } },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['60%', '40%'], body: [[{ text: `โดยออกเดินทางในวันที่ ${moment(d.start_date).format('LL').replace(y_replace, ' พ.ศ. ' + (y_replace + 543))}   ` }, { text: `เวลา ${d.start_time}  น.` }],] } },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['60%', '40%'], body: [[{ text: `และจะกลับในวันที่  ${moment(d.end_date).format('LL').replace(y_replace, ' พ.ศ. ' + (y_replace + 543))}` }, { text: `เวลา  ${d.end_time}  น.` }],] } },
                 { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `(ลงชื่อ)..................................................ผู้ขออนุญาต` }],] }, marginTop: 30, alignment: 'center' },
                 {
                     layout: pdfMake.tableLayouts.L1, table: {
@@ -411,8 +434,7 @@ const Reserve_ = () => {
                         // data-tw-toggle="modal"
                         // data-tw-target="#header-footer-modal-preview"
                         onClick={() => {
-                            setOpen(true)
-                            onReset()
+                            onOpenModal()
                             // formData.cid == ""
                             //     ? openNotificationWithIcon("error")
                             //     : getPatientId(formData.cid)

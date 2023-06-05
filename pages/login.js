@@ -22,6 +22,7 @@ const Login = () => {
   }, []);
 
   const login = async () => {
+    console.log('login')
     let data = JSON.stringify({
       username: account.username,
       password: account.password,
