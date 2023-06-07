@@ -102,7 +102,7 @@ const Reserve_ = () => {
         notification[type]({
             message: "แจ้งเตือน",
             description: "กรุณากรอกข้อมูลให้ครับ",
-            duration: 5000,
+            duration: 1,
             style: { backroundColor: "#164E63" },
         });
     };
