@@ -62,7 +62,7 @@ const BossAdmin_ = () => {
 
             setTabFilter('waitapprove')
             getReserveAll('waitapprove')
-            AlertNoti()
+            // AlertNoti()
 
 
 

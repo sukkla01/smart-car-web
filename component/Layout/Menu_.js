@@ -19,7 +19,7 @@ import jwt_decode from "jwt-decode";
 
 const Menu_ = () => {
   const router = useRouter();
-  const [selectId, setSelectId] = useState(1);
+  const [selectId, setSelectId] = useState(0);
   const [ActiveText, setIsActiveText] = useState("");
   const [isShowMenu, setIsShowMenu] = useState(true);
 

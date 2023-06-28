@@ -61,7 +61,7 @@ const BossDept_ = () => {
             if (decoded.dept == data) {
                 setTabFilter('waitapprove')
                 getReserveAll('waitapprove')
-                AlertNoti()
+                // AlertNoti()
             }
 
 

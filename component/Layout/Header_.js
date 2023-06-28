@@ -112,13 +112,7 @@ const Header_ = () => {
                 size={22}
               />
             </div>
-            <a className="notification notification--light sm:hidden">
-              <Bell
-                className="notification__icon dark:text-slate-50"
-                color="white"
-                size={22}
-              />
-            </a>
+
             <div className="search-result">
               <div className="search-result__content">
                 <div className="search-result__content__title">Pages</div>
@@ -253,9 +247,15 @@ const Header_ = () => {
               </div>
             </div>
           </div>
+          <div className="intro-x  mr-2 ">
+            <div className="  notification notification--bullet cursor-pointer" role="button" aria-expanded="false" data-tw-toggle="dropdown">
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" icon-name="bell" data-lucide="bell" className=" animate__animated animate__headShake lucide lucide-bell notification__icon dark:text-slate-500"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 01-3.46 0" /></svg> </div>
+
+          </div>
+
           {/* END: Search */}
           {/* BEGIN: Notifications */}
-          <div className="intro-x dropdown mr-4 sm:mr-6"  >
+          <div className="intro-x dropdown mr-2 sm:mr-6"  >
             {isShowMenu ?
               <div
                 className={`dropdown-toggle notification ${data.length > 0 ? 'notification--bullet' : ""}  cursor-pointer`}

@@ -92,7 +92,7 @@ const AdminCar_ = () => {
             setTabFilter('waitapprove')
             getReserveAll('waitapprove')
             // console.log(data)
-            AlertNoti()
+            // AlertNoti()
 
         })
 
