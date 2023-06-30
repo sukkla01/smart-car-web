@@ -166,9 +166,9 @@ const Dashboard = () => {
                 <tbody>
                     {data2.map((item, i) => {
                         return <tr className="intro-x">
-                            <td className="w-10">
+                            <td className="w-5">
                                 <div className="flex">
-                                    <div className="w-10 h-6 image-fit zoom-in text-xl">
+                                    <div className="w-5 h-6 image-fit zoom-in text-xl">
                                         {i + 1}
                                     </div>
 

@@ -465,7 +465,7 @@ const Reserve_ = () => {
                         {dataHistory.map((item, i) => {
                             return (
 
-                                <tr className="intro-x cursor-pointer zoom-in box" key={i}
+                                <tr className="intro-x cursor-pointer  " key={i}
                                     onClick={() => {
                                         // getPatientId(item.cid)
                                         // setOpen(true)
@@ -476,10 +476,10 @@ const Reserve_ = () => {
                                 >
                                     <td className="w-20 ">
                                         <div className="flex">
-                                            <div className="w-12 h-12 image-fit zoom-in">
+                                            <div className="w-12 h-12 ">
                                                 <img
                                                     alt="Midone - HTML Admin Template"
-                                                    className="tooltip rounded-full"
+                                                    className=" rounded-full"
                                                     src="dist/images/avatar.png"
                                                 />
                                             </div>

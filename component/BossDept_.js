@@ -147,12 +147,12 @@ const BossDept_ = () => {
                             buttonStyle="solid"
                         />
                     </div>
-                    <div className="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
+                    {/* <div className="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
                         <div className="w-56 relative text-slate-500">
                             <input type="text" className="form-control w-56 box pr-10" placeholder="Search..." />
                             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" icon-name="search" className="lucide lucide-search w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0" data-lucide="search"><circle cx={11} cy={11} r={8} /><line x1={21} y1={21} x2="16.65" y2="16.65" /></svg>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 {/* BEGIN: Users Layout */}
                 {data.map((item, i) => {

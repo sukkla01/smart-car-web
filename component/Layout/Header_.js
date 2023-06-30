@@ -73,16 +73,26 @@ const Header_ = () => {
 
   return (
     <div>
-      <div className="top-bar-boxed top-bar-boxed--top-menu h-[70px] md:h-[65px] z-[51] border-b border-white/[0.08] -mt-7 md:mt-0 -mx-3 sm:-mx-8 md:-mx-0 px-3 md:border-b-0 relative md:fixed md:inset-x-0 md:top-0 sm:px-8 md:px-10 md:pt-10 md:bg-gradient-to-b md:from-slate-100 md:to-transparent dark:md:from-darkmode-700">
+     <style jsx>{`
+               @media (min-width: 600px) {
+                .content-layout {
+                  margin-bottom: 98px;
+                  
+                }
+              }
+  
+              
+            `}</style>
+      <div className="top-bar-boxed top-bar-boxed--top-menu h-[70px] md:h-[65px] z-[51] border-b border-white/[0.08] content-layout -mt-7  md:mt-0 -mx-3 sm:-mx-8 md:-mx-0 px-3 fix-nav md:border-b-0 relative md:inset-x-0 md:top-0 sm:px-8 md:px-10 md:pt-10 md:bg-gradient-to-b md:from-slate-100 md:to-transparent dark:md:from-darkmode-700">
         <div className="h-full flex items-center">
           {/* BEGIN: Logo */}
-          <a className="logo -intro-x  md:flex xl:w-[180px] ">
+          <a className="logo -intro-x  md:flex xl:w-[180px]  mr-2">
             <img
               alt="Midone - HTML Admin Template"
               className="logo__image w-6"
               src="dist/images/logo.svg"
             />
-            <span className="logo__text text-white text-lg ml-3">
+            <span className="logo__text text-white text-lg ml-3 hidden sm:block">
               SmartCar
             </span>
           </a>

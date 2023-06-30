@@ -24,7 +24,7 @@ class MyDocument extends Document {
 
                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.css"></link>
 
-
+                        <link rel="stylesheet" href="dist/css/back.css" />
                         <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@200&display=swap" rel="stylesheet"></link>
                         <link
                             rel="stylesheet"
@@ -37,7 +37,7 @@ class MyDocument extends Document {
 
 
                 </Head>
-                <body className='py-5 md:py-0' style={{ backgroundColor: '#E5E7EB' }}>
+                <body className='py-5 md:py-0 color-background' >
                     <Main />
                     <NextScript />
 

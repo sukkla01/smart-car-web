@@ -6,9 +6,20 @@ const Hoc = (props) => {
     return (
         <div>
             {/* <Header_ /> */}
-            <Header_ style={{ marginTop : 20 }}/>
+            <Header_  />
             {/* <Menu_ /> */}
-            <div className="content content--top-nav" style={{ marginLeft:15,marginRight:15,marginTop:160}}>
+            <style jsx>{`
+              
+              
+              @media (min-width: 600px) {
+                .content-padding {
+                  margin-left : 15px;
+                  margin-right : 15px;
+                }
+              }
+              
+            `}</style>
+            <div className="content content--top-nav content-padding" >
                 <div className="grid grid-cols-12 gap-6">
                     <div className="col-span-12 2xl:col-span-12">
                         {props.children}
