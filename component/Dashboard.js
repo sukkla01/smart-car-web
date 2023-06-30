@@ -156,7 +156,7 @@ const Dashboard = () => {
                     <div className="flex  ">
                         <Activity className="top-menu__sub-icon " size={32} />
                         <span className="text-xl  truncate ml-4">{'จำนวนการจองรถ  แยกตามหน่าวยงาน(ครั้ง)'}</span>
-                    </div>
+                    </div> 
                     <br />
                 </div>
             </div>
