@@ -114,7 +114,7 @@ const Reserve_ = () => {
         setFormData({ ...formData, staff: decoded.username, username: decoded.username, dept: decoded.dept })
         console.log(decoded.dept)
         try {
-            let res = await axios.get(`${BASE_URL}/get-reserve-car-user/${decoded.dept}`, {
+            let res = await axios.get(`${BASE_URL}/get-reserve-car-user/${decoded.dept}/${decoded.username}`, {
                 headers: { token: token },
             });
             setDataHistory(res.data)
