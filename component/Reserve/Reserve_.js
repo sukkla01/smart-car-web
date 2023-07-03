@@ -826,6 +826,17 @@ const Reserve_ = () => {
 
                                                     </div>
                                                 </div>
+                                                {console.log(data)}
+                                                <div className="flex flex-col sm:flex-row items-center mt-2">
+                                                    <div className="mr-auto">
+                                                        <a className="flex items-center text-primary font-medium" href>
+                                                            <User className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> คนขับรถ </a>
+                                                    </div>
+                                                    <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                        <div className="bg-success text-white rounded px-2 mr-1">{data[0].keeper_name} </div>
+
+                                                    </div>
+                                                </div>
                                                 <div className="flex flex-col sm:flex-row items-center mt-2">
                                                     <div className="mr-auto">
                                                         <a className="flex items-center text-primary font-medium" href>
