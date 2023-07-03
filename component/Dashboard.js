@@ -20,10 +20,10 @@ const { TextArea } = Input;
 const { Meta } = Card;
 const BASE_URL = config.BASE_URL;
 const socket = io(BASE_URL)
-
+import { useRouter } from "next/router";
 
 const Dashboard = () => {
-
+    const router = useRouter();
     const [data, setData] = useState([]);
     const [data2, setData2] = useState([]);
     const [open, setOpen] = useState(false);
@@ -93,7 +93,12 @@ const Dashboard = () => {
                         </div>
                         <br />
                     </div>
-                    <div className="grid grid-cols-12 gap-6 mt-5">
+                    <div className="grid grid-cols-12 gap-6 mt-5" onClick={() => {
+                        localStorage.setItem("NavId", 10);
+                        router.push({
+                            pathname: '/boss-dept',
+                        })
+                    }}>
                         <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
                             <div className="report-box zoom-in">
                                 <div className="box p-5">
@@ -156,7 +161,7 @@ const Dashboard = () => {
                     <div className="flex  ">
                         <Activity className="top-menu__sub-icon " size={32} />
                         <span className="text-xl  truncate ml-4">{'จำนวนการจองรถ  แยกตามหน่าวยงาน(ครั้ง)'}</span>
-                    </div> 
+                    </div>
                     <br />
                 </div>
             </div>
