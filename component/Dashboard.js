@@ -113,7 +113,12 @@ const Dashboard = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y" onClick={() => {
+                        localStorage.setItem("NavId", 3);
+                        router.push({
+                            pathname: '/boss-dept',
+                        })
+                    }}>
                             <div className="report-box zoom-in">
                                 <div className="box p-5">
                                     <div className="flex">
@@ -127,7 +132,12 @@ const Dashboard = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                        <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y" onClick={() => {
+                        localStorage.setItem("NavId", 11);
+                        router.push({
+                            pathname: '/boss-dept',
+                        })
+                    }}>
                             <div className="report-box zoom-in">
                                 <div className="box p-5">
                                     <div className="flex">
