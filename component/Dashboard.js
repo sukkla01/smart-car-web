@@ -82,6 +82,26 @@ const Dashboard = () => {
         }
     }
 
+
+    const boss_dept = () => {
+        localStorage.setItem("NavId", 10);
+        router.push({
+            pathname: '/boss-dept',
+        })
+    }
+    const admin_car = () => {
+        localStorage.setItem("NavId", 3);
+        router.push({
+            pathname: '/admin-car',
+        })
+    }
+    const boss_admin = () => {
+        localStorage.setItem("NavId", 11);
+        router.push({
+            pathname: '/boss-admin',
+        })
+    }
+
     return (
         <>
             {data.length > 0 ?
@@ -93,13 +113,8 @@ const Dashboard = () => {
                         </div>
                         <br />
                     </div>
-                    <div className="grid grid-cols-12 gap-6 mt-5" onClick={() => {
-                        localStorage.setItem("NavId", 10);
-                        router.push({
-                            pathname: '/boss-dept',
-                        })
-                    }}>
-                        <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                    <div className="grid grid-cols-12 gap-6 mt-5" >
+                        <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y" onClick={ boss_dept }>
                             <div className="report-box zoom-in">
                                 <div className="box p-5">
                                     <div className="flex">
@@ -113,12 +128,7 @@ const Dashboard = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y" onClick={() => {
-                        localStorage.setItem("NavId", 3);
-                        router.push({
-                            pathname: '/admin-car',
-                        })
-                    }}>
+                        <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y" onClick={ admin_car }>
                             <div className="report-box zoom-in">
                                 <div className="box p-5">
                                     <div className="flex">
@@ -132,12 +142,7 @@ const Dashboard = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y" onClick={() => {
-                        localStorage.setItem("NavId", 11);
-                        router.push({
-                            pathname: '/boss-admin',
-                        })
-                    }}>
+                        <div className="col-span-12 sm:col-span-6 xl:col-span-3 intro-y" onClick={boss_admin}>
                             <div className="report-box zoom-in">
                                 <div className="box p-5">
                                     <div className="flex">
