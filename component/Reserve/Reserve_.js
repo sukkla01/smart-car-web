@@ -213,7 +213,7 @@ const Reserve_ = () => {
 
         if (formData.username == null || formData.dept == null || formData.position == null || formData.tcount == null ||
             formData.location == null || formData.start_date == null || formData.start_time == null || formData.end_date == null || formData.end_time == null) {
-                openNotificationError('error')
+            openNotificationError('error')
         } else {
             try {
                 let res = await axios.post(`${BASE_URL}/add-reserve-car`, formData, {
@@ -367,7 +367,7 @@ const Reserve_ = () => {
                 {
                     layout: pdfMake.tableLayouts.L1, table: {
                         widths: ['50%', '50%'], body: [[
-                            { text: `เห็นควรอนุญาตใหเใช้รถ ${d.type_car == null ? '..........................................................' : d.type_car}` },
+                            { text: `เห็นควรอนุญาตให้ใช้รถ ${d.type_car == null ? '..........................................................' : d.type_car}` },
                             { text: `หมายเลขทะเบียน ${d.no_car == null ? '..............................................' : d.no_car}` }],]
                     }, marginTop: 10
                 },
@@ -501,7 +501,9 @@ const Reserve_ = () => {
                       </div>
                     </td> */}
                                     <td className="text-right w-40 " onClick={() => onDetail(item.id)}>
-                                        <span className="text-sm"> {item.boss_admin == null ? '' : <><Badge status="success" text=" " />{item.type_car}</>}   </span>
+                                        <span className="text-sm"> {item.boss_admin == null || item.approve_status == 'N' ? '' : <>
+                                            <Badge status="success" text=" " />{item.type_car}</>}
+                                        </span>
                                         <div className="text-slate-500   whitespace-nowrap mt-0.5">
                                             {item.boss_admin == null ? <><Badge status="warning" text=" " /><span className="mr-0 text-warning"> รออนุมัติ</span></> :
                                                 item.approve_status == 'Y' ?
@@ -509,8 +511,6 @@ const Reserve_ = () => {
                                                     <> <Badge status="error" text=" " /><span className="mr-0 text-danger"> ไม่อนุมัติ</span></>
                                             }
                                         </div>
-
-
                                     </td>
 
                                     <td className="table-report__action w-48" >
@@ -778,92 +778,100 @@ const Reserve_ = () => {
                         <Col span={12}>
                             <div className="intro-y  px-5 pt-0 ">
                                 {data.length > 0 ? data[0].boss_admin_date == null ?
-                                    <div className="text-warning" style={{ fontSize: 30, textAlign: 'center', marginTop: 30 }}>รออนุมัติ</div>
+                                    <div className="text-warning" style={{ fontSize: 30, textAlign: 'center', marginTop: 30 }}>
+                                        รออนุมัติ
+                                    </div>
                                     :
-                                    <div className="intro-y col-span-12 md:col-span-3 zoom-in mt-5">
-                                        <div className="intro-y box mt-5 lg:mt-0">
-                                            <div className="relative flex items-center p-5" style={{ backgroundColor: 'white', borderRadius: 10 }}>
-                                                <div className="w-12 h-12 image-fit">
-                                                    <img alt="Midone - HTML Admin Template" src={BASE_URL + '/' + data[0].image_car} data-action="zoom" className="w-full rounded-md" />
-                                                </div>
-                                                <div className="ml-4 mr-auto">
-                                                    <div className="font-medium text-base">{data[0].type_car}</div>
-                                                    <div className="text-slate-500">{data[0].no_car}</div>
-                                                </div>
-                                                <div className="dropdown">
-                                                    <a className="dropdown-toggle w-5 h-5 block" href="javascript:;" aria-expanded="false" data-tw-toggle="dropdown"> <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" icon-name="more-horizontal" data-lucide="more-horizontal" className="lucide lucide-more-horizontal w-5 h-5 text-slate-500"><circle cx={12} cy={12} r={1} /><circle cx={19} cy={12} r={1} /><circle cx={5} cy={12} r={1} /></svg> </a>
-                                                    <div className="dropdown-menu w-56">
+                                    data[0].approve_status == 'N' ? <div >
+                                        <div className="text-danger" style={{ fontSize: 30, textAlign: 'center', marginTop: 30 }}>ไม่อนุมัติ</div>
+                                        <p style={{ textAlign: 'center', marginTop: 10 }}>
+                                            เหตุผล   : {data[0].comment}
+                                        </p>
+                                    </div> :
+                                        <div className="intro-y col-span-12 md:col-span-3 zoom-in mt-5">
+                                            <div className="intro-y box mt-5 lg:mt-0">
+                                                <div className="relative flex items-center p-5" style={{ backgroundColor: 'white', borderRadius: 10 }}>
+                                                    <div className="w-12 h-12 image-fit">
+                                                        <img alt="Midone - HTML Admin Template" src={BASE_URL + '/' + data[0].image_car} data-action="zoom" className="w-full rounded-md" />
+                                                    </div>
+                                                    <div className="ml-4 mr-auto">
+                                                        <div className="font-medium text-base">{data[0].type_car}</div>
+                                                        <div className="text-slate-500">{data[0].no_car}</div>
+                                                    </div>
+                                                    <div className="dropdown">
+                                                        <a className="dropdown-toggle w-5 h-5 block" href="javascript:;" aria-expanded="false" data-tw-toggle="dropdown"> <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" icon-name="more-horizontal" data-lucide="more-horizontal" className="lucide lucide-more-horizontal w-5 h-5 text-slate-500"><circle cx={12} cy={12} r={1} /><circle cx={19} cy={12} r={1} /><circle cx={5} cy={12} r={1} /></svg> </a>
+                                                        <div className="dropdown-menu w-56">
 
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <div className="p-5 border-t border-slate-200/60 dark:border-darkmode-400">
+                                                    <div className="flex flex-col sm:flex-row items-center">
+                                                        <div className="mr-auto">
+                                                            <a className="flex items-center text-primary font-medium" href>
+                                                                <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลาเดินทาง </a>
+                                                        </div>
+                                                        <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                            <div className="bg-warning/ text-warning rounded px-2 mr-1">{moment(data[0].start_date).format("DD/MM/") + (parseInt(moment(data[0].start_date).format("YYYY")) + 543)}  {data[0].start_time}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col sm:flex-row items-center mt-2">
+                                                        <div className="mr-auto">
+                                                            <a className="flex items-center text-primary font-medium" href>
+                                                                <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลากลับ </a>
+                                                        </div>
+                                                        <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                            <div className=" text-success rounded px-2 mr-1">{moment(data[0].end_date).format("DD/MM/") + (parseInt(moment(data[0].end_date).format("YYYY")) + 543)}  {data[0].end_time} </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col sm:flex-row items-center mt-2">
+                                                        <div className="mr-auto">
+                                                            <a className="flex items-center text-primary font-medium" href>
+                                                                <User className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> จำนวนคนทั้งหมด </a>
+                                                        </div>
+                                                        <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                            <div className="bg-danger text-white rounded px-2 mr-1">{data[0].tcount} คน</div>
+
+                                                        </div>
+                                                    </div>
+                                                    {console.log(data)}
+                                                    <div className="flex flex-col sm:flex-row items-center mt-2">
+                                                        <div className="mr-auto">
+                                                            <a className="flex items-center text-primary font-medium" href>
+                                                                <User className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> คนขับรถ </a>
+                                                        </div>
+                                                        <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
+                                                            <div className="bg-success text-white rounded px-2 mr-1">{data[0].keeper_name} </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col sm:flex-row items-center mt-2">
+                                                        <div className="mr-auto">
+                                                            <a className="flex items-center text-primary font-medium" href>
+                                                                <MapPin className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> สถานที่ </a>
+                                                        </div>
+
+                                                    </div>
+                                                    <div className="mt-1 ml-6" style={{ color: 'grey', fontWeight: 2 }}>{data[0].location} </div>
+                                                    <div className="flex flex-col sm:flex-row items-center mt-2">
+                                                        <div className="mr-auto">
+                                                            <a className="flex items-center text-primary font-medium" href>
+                                                                <Database className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> รายละเอียด </a>
+                                                        </div>
+
+                                                    </div>
+                                                    <div className="mt-1 ml-6" style={{ color: 'grey', fontWeight: 2 }}>
+                                                        {data[0].detail}
+                                                    </div>
+
+
+
+                                                </div>
+
+
                                             </div>
-                                            <div className="p-5 border-t border-slate-200/60 dark:border-darkmode-400">
-                                                <div className="flex flex-col sm:flex-row items-center">
-                                                    <div className="mr-auto">
-                                                        <a className="flex items-center text-primary font-medium" href>
-                                                            <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลาเดินทาง </a>
-                                                    </div>
-                                                    <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
-                                                        <div className="bg-warning/ text-warning rounded px-2 mr-1">{moment(data[0].start_date).format("DD/MM/") + (parseInt(moment(data[0].start_date).format("YYYY")) + 543)}  {data[0].start_time}</div>
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col sm:flex-row items-center mt-2">
-                                                    <div className="mr-auto">
-                                                        <a className="flex items-center text-primary font-medium" href>
-                                                            <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลากลับ </a>
-                                                    </div>
-                                                    <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
-                                                        <div className=" text-success rounded px-2 mr-1">{moment(data[0].end_date).format("DD/MM/") + (parseInt(moment(data[0].end_date).format("YYYY")) + 543)}  {data[0].end_time} </div>
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col sm:flex-row items-center mt-2">
-                                                    <div className="mr-auto">
-                                                        <a className="flex items-center text-primary font-medium" href>
-                                                            <User className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> จำนวนคนทั้งหมด </a>
-                                                    </div>
-                                                    <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
-                                                        <div className="bg-danger text-white rounded px-2 mr-1">{data[0].tcount} คน</div>
 
-                                                    </div>
-                                                </div>
-                                                {console.log(data)}
-                                                <div className="flex flex-col sm:flex-row items-center mt-2">
-                                                    <div className="mr-auto">
-                                                        <a className="flex items-center text-primary font-medium" href>
-                                                            <User className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> คนขับรถ </a>
-                                                    </div>
-                                                    <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
-                                                        <div className="bg-success text-white rounded px-2 mr-1">{data[0].keeper_name} </div>
-
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col sm:flex-row items-center mt-2">
-                                                    <div className="mr-auto">
-                                                        <a className="flex items-center text-primary font-medium" href>
-                                                            <MapPin className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> สถานที่ </a>
-                                                    </div>
-
-                                                </div>
-                                                <div className="mt-1 ml-6" style={{ color: 'grey', fontWeight: 2 }}>{data[0].location} </div>
-                                                <div className="flex flex-col sm:flex-row items-center mt-2">
-                                                    <div className="mr-auto">
-                                                        <a className="flex items-center text-primary font-medium" href>
-                                                            <Database className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> รายละเอียด </a>
-                                                    </div>
-
-                                                </div>
-                                                <div className="mt-1 ml-6" style={{ color: 'grey', fontWeight: 2 }}>
-                                                    {data[0].detail}
-                                                </div>
-
-
-
-                                            </div>
-
-
-                                        </div>
-
-                                    </div> : ''}
+                                        </div> : ''}
 
 
 

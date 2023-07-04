@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Figma, CalendarCheck2, MapPin, User, Database, Codesandbox, UserCheck,Check } from "lucide-react";
+import { Figma, CalendarCheck2, MapPin, User, Database, XCircle, UserCheck, Check } from "lucide-react";
 import { Switch, Modal, Form, Input, Select, DatePicker, Popconfirm, TimePicker, Card, Radio, notification } from "antd";
 import axios from "axios";
 import config from "../config";
@@ -26,6 +26,9 @@ const BossAdmin_ = () => {
     const [notApprove, setNotApprove] = useState('');
     const [tabFilter, setTabFilter] = useState('waitapprove');
     const [isConnected, setIsConnected] = useState(socket.connected)
+    const [open3, setOpen3] = useState(false);
+    const [comment, setComment] = useState('');
+    const [selectId, setSelectId] = useState(null);
 
 
     const optionsFilter = [
@@ -71,7 +74,7 @@ const BossAdmin_ = () => {
         return () => {
             socket.off("connect")
             socket.off("disconnect")
-          }
+        }
 
     }, []);
 
@@ -123,6 +126,43 @@ const BossAdmin_ = () => {
         }
     }
 
+    const onNotApprove = (id, boss_admin_comment) => {
+        setComment(boss_admin_comment)
+        setOpen3(true)
+        setSelectId(id)
+
+    }
+    const onNotApproveEdit = (id, boss_admin_comment) => {
+        setComment(boss_admin_comment)
+        setOpen3(true)
+        setSelectId(id)
+    }
+    const submitNotApprove = async (id) => {
+        const token = localStorage.getItem("token");
+        const decoded = jwt_decode(token);
+
+        let post = {
+            head_id: selectId,
+            staff: decoded.username,
+            comment: comment
+        }
+        // console.log(post)
+        try {
+            let res = await axios.post(`${BASE_URL}/add-not-approve-boss-admin`, post, { headers: { "token": token } })
+            setOpen3(false)
+            getReserveAll('waitapprove')
+            setTabFilter('waitapprove')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const onExitNotApprove = (id) => {
+        setOpen3(false)
+    }
+
+
+
     return (
         <div>
             <div className="intro-y    h-10  mt-5">
@@ -157,6 +197,7 @@ const BossAdmin_ = () => {
                 </div>
                 {/* BEGIN: Users Layout */}
                 {data.map((item, i) => {
+                    console.log(item)
                     return <div className="intro-y col-span-12 md:col-span-3 zoom-in" key={i}>
                         <div className="intro-y box mt-5 lg:mt-0">
                             <div className="relative flex items-center p-5" style={{ backgroundColor: item.boss_admin == null ? 'white' : 'skyblue', borderRadius: 10 }}>
@@ -185,7 +226,7 @@ const BossAdmin_ = () => {
                                             <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลาเดินทาง </a>
                                     </div>
                                     <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
-                                        <div className="bg-warning/ text-warning rounded px-2 mr-1">{moment(item.start_date).format("DD/MM/") + (parseInt(moment(item.start_date).format("YYYY")) + 543)}  {item.start_time}</div>
+                                        <div className="bg-warning/ text-warning rounded px-2 mr-1">{item.start_date == null ? '' : moment(item.start_date).format("DD/MM/") + (parseInt(moment(item.start_date).format("YYYY")) + 543)}  {item.start_time}</div>
                                     </div>
                                 </div>
                                 <div className="flex flex-col sm:flex-row items-center mt-2">
@@ -194,7 +235,7 @@ const BossAdmin_ = () => {
                                             <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} /> วันเวลากลับ </a>
                                     </div>
                                     <div className="w-full sm:w-auto flex items-center mt-3 sm:mt-0">
-                                        <div className=" text-success rounded px-2 mr-1"> {moment(item.end_date).format("DD/MM/") + (parseInt(moment(item.end_date).format("YYYY")) + 543)}  {item.end_time}</div>
+                                        <div className=" text-success rounded px-2 mr-1"> {item.end_date == null ? '' : moment(item.end_date).format("DD/MM/") + (parseInt(moment(item.end_date).format("YYYY")) + 543)}  {item.end_time}</div>
                                     </div>
                                 </div>
                                 <div className="flex flex-col sm:flex-row items-center mt-2">
@@ -229,9 +270,37 @@ const BossAdmin_ = () => {
 
 
                             </div>
+                            <div className="p-5 border-t border-slate-200/60 dark:border-darkmode-400 flex">
+                                <button className={` btn btn btn${item.approve_status == 'N' ? '-danger' : '-outline-danger'}    w-32`} onClick={() => {
 
-                            <div className="p-5 border-t border-slate-200/60 dark:border-darkmode-400 ">
-                                {/* <button className={` btn btn btn${item.approve_status == 'N' ? '-danger' : '-outline-danger'}    w-32`} onClick={() => {
+                                    if (item.approve_status == null) {
+                                        onNotApprove(item.id, item.boss_admin_detail)
+
+                                    } else {
+                                        onNotApproveEdit(item.id, item.boss_admin_detail)
+                                    }
+
+                                }}>
+                                    <XCircle className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
+                                    <div>ไม่อนุมัติ</div>
+                                </button>
+                                <Popconfirm
+                                    title="คุณต้องการอนุมัติหรือไม่"
+                                    onConfirm={() => submit(item.id, item.dept)}
+                                    // onCancel={cancel}
+                                    okText="ตกลง"
+                                    cancelText="ออก"
+                                >
+                                    <button type="button" className={` btn btn${item.boss_admin == null ? '-outline-success' : '-success'}  ml-auto w-32`} >
+                                        <Check className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
+                                        <div>อนุมัติ</div>
+                                    </button>
+                                </Popconfirm>
+
+                            </div>
+
+                            {/* <div className="p-5 border-t border-slate-200/60 dark:border-darkmode-400 ">
+                                <button className={` btn btn btn${item.approve_status == 'N' ? '-danger' : '-outline-danger'}    w-32`} onClick={() => {
 
                                     if (item.approve_status == 'N') {
                                         onNotApproveEdit(item.id)
@@ -244,7 +313,7 @@ const BossAdmin_ = () => {
                                     <CalendarCheck2 className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
                                     <div>ไม่อนุมัติ</div>
                                     
-                                </button> */}
+                                </button>
                                 {item.boss_admin == null ?
                                     <Popconfirm
                                         title="คุณต้องการอนุมัติหรือไม่"
@@ -253,16 +322,16 @@ const BossAdmin_ = () => {
                                         okText="ตกลง"
                                         cancelText="ออก"
                                     >
-                                        <button type="button" className={` btn btn${item.boss_admin == null ? '-outline-success' : '-success'}  `} style={{ width: '100%' }}>
+                                        <button type="button" className={` btn btn${item.boss_admin == null ? '-outline-success' : '-success'}  `} >
                                             <Check className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
                                             <div>อนุมัติ</div>
                                         </button>
                                     </Popconfirm> :
-                                    <button type="button" className={` btn btn${item.boss_admin == null ? '-outline-success' : '-success'}  `} style={{ width: '100%' }}>
+                                    <button type="button" className={` btn btn${item.boss_admin == null ? '-outline-success' : '-success'}  `} >
                                         <Check className="top-menu__sub-icon  lucide lucide-box w-4 h-4 mr-2" size={18} />
                                         <div>อนุมัติ</div>
                                     </button>}
-                            </div>
+                            </div> */}
                         </div>
 
                     </div>
@@ -275,6 +344,39 @@ const BossAdmin_ = () => {
 
 
 
+            <Modal
+                headStyle={{ backgroundColor: "red" }}
+                title={"ไม่อนุมัติ"}
+                // centered
+                open={open3}
+                onOk={submitNotApprove}
+                onCancel={onExitNotApprove}
+                width="60%"
+                className="modalStyle2"
+                okText="บันทึก"
+                cancelText="ยกเลิก"
+            >
+                <div className="modal-body " style={{ marginTop: -30 }}>
+                    <div className="intro-y  px-5 pt-0 ">
+                        <div className="cols-8  ">
+                            <Form
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 14 }}
+                                layout="horizontal"
+                            // initialValues={{ size: componentSize }}
+                            // onValuesChange={onFormLayoutChange}
+                            >
+                                <div className="col-span-12 lg:col-span-12 mt-3">
+                                    <label style={{ marginRight: 27 }}>เหตุผล</label>
+                                    <TextArea value={comment} rows={4} placeholder="---รายละเอียด---" style={{ width: '80%' }} onChange={(e) => setComment(e.target.value)} />
+                                </div>
+
+
+                            </Form>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
 
 
         </div>
