@@ -392,7 +392,7 @@ const Reserve_ = () => {
                 {
                     layout: pdfMake.tableLayouts.L1, table: {
                         widths: ['45%', '55%'], body: [[{ text: `` },
-                        { text: `( ${d.boss_admin_name == null ? '..............................................' : d.boss_admin_name} )` }],]
+                        { text: `( เธียรชัย กิจสนาโยธิน )` }],]
                     },
                     marginTop: 0, alignment: 'center', marginLeft: -50
                 },
