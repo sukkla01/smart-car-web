@@ -13,6 +13,7 @@ import 'dayjs/locale/th';
 import locale from 'antd/locale/th_TH';
 import jwt_decode from "jwt-decode";
 import io from "socket.io-client"
+import { pdfMake } from "../lib/pdfmake";
 
 const { TextArea } = Input;
 const { Meta } = Card;
@@ -358,6 +359,80 @@ const AdminCar_ = () => {
         }
     }
 
+    const errorFilterDate = (type) => {
+        notification[type]({
+            message: "แจ้งเตือน",
+            description: "กรุณาเลือกวันที่",
+            duration: 5,
+            style: { backroundColor: "#164E63" },
+        });
+    };
+
+    const onPdf = async () => {
+        let d = {}
+
+        if(formData.filter_date == null || formData.filter_date == ''){
+            errorFilterDate('error')
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        try {
+            let res = await axios.get(`${BASE_URL}/get-report-reserve/${id}`, {
+                headers: { token: token },
+            });
+            d = res.data[0]
+            // console.log(res.data[0])
+        } catch (error) {
+            console.log(error);
+        }
+
+
+
+
+
+
+        pdfMake.tableLayouts = {
+            L1: {
+                defaultBorder: false,
+                paddingTop: function (i, node) {
+                    return 0
+                },
+                paddingBottom: function (i, node) {
+                    return 0
+                },
+                paddingLeft: function (i, node) {
+                    return 0
+                },
+            }
+        };
+
+        pdfMake.createPdf({
+            title: 'ใบขออนุญาตใช้รถ',
+            info: {
+                title: 'ใบขออนุญาตใช้รถ',
+            },
+            // watermark: { text: 'ทดสอบ', color: 'grey', opacity: 0.3, fontSize: 20, angle: 45 },
+            pageSize: 'A4',
+            pageOrientation: 'landscape',
+            pageMargins: [30, 20, 30, 10], //default 10 //[left,top,right,bottom]
+            content: [
+                { text: 'รายการผู้ขอใช้รถราชการ', fontSize: 18, alignment: 'center', decoration: 'underline' },
+                { text: `วันที่  ${moment(formData.filter_date).format('LL').replace('2023', '2566')}  `, fontSize: 16, alignment: 'center' },
+                // { text: `วันที่....${moment().format('LL').replace('2023', '2566')}.......`, fontSize: 16, alignment: 'right', marginTop: 20 },
+
+
+            ],
+
+            defaultStyle: {
+                font: 'THSarabunNew',
+                // bold : true,
+                // italics : true,
+                fontSize: 16
+            }
+        }).open()
+    }
+
     return (
         <div>
             <div className="intro-y    h-10  mt-5">
@@ -389,13 +464,13 @@ const AdminCar_ = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" icon-name="search" className="lucide lucide-search w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0" data-lucide="search"><circle cx={11} cy={11} r={8} /><line x1={21} y1={21} x2="16.65" y2="16.65" /></svg>
                         </div>
                     </div> */}
-                    <div className="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
+                    <div className="w-full sm:w-auto flex mt-4 sm:mt-0">
 
                         <ConfigProvider locale={locale}>
                             <DatePicker
                                 onChange={onChangeDateFilter}
                                 placeholder="------เลือกวันที่------"
-                                style={{ width: '80%' }}
+                                style={{ width: '100%' }}
                                 value={
                                     formData.filter_date == null
                                         ? null
@@ -403,7 +478,7 @@ const AdminCar_ = () => {
                                 }
                             />
                         </ConfigProvider>
-                        <button class="btn btn btn-outline-danger mr-2 ml-2 btn-sm" >
+                        <button class="btn btn btn-outline-danger mr-2 ml-2 btn-sm" onClick={onPdf}>
                             <Printer className="top-menu__sub-icon  lucide lucide-box w-5 h-5 mr-2" size={20} />
                             <div>พิมพ์</div>
                         </button>
