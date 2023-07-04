@@ -150,7 +150,7 @@ const Menu_ = () => {
               />
             </div>
             <div className="top-menu__title">
-              หัวหน้า
+              รองบริหาร
             </div>
           </a>
         </li>
