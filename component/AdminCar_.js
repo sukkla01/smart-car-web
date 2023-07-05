@@ -390,18 +390,29 @@ const AdminCar_ = () => {
 
         const tableHeader = [
             { text: 'ลำดับ', alignment: 'center', bold: true },
-            { text: 'ผู้ขอ', alignment: 'left', bold: true },
+            { text: 'ผู้ขอ', alignment: 'center', bold: true },
             { text: 'หน่วยงาน', alignment: 'center', bold: true },
             { text: 'สถานที่', alignment: 'center', bold: true },
-            { text: 'วันเวลาเดินทาง', alignment: 'center', bold: true },
-            { text: 'วันเวลากลับ', alignment: 'center', bold: true },
+            { text: 'จำนวน', alignment: 'center', bold: true },
+            { text: 'รายละเอียด', alignment: 'center', bold: true },
+            { text: 'คนขับ', alignment: 'center', bold: true },
+            { text: 'เวลาออก', alignment: 'center', bold: true },
+            { text: 'เวลากลับ', alignment: 'center', bold: true },
 
         ]
 
         console.log(d)
         let bodyTable = [];
         bodyTable = d.map((item, i) => {
-            return [{ text: i + 1, alignment: 'center', bold: true }, item.tname, item.dept_name, item.location, item.start_date, item.end_date];
+            let starttime = item.start_date.substring(0,5)
+            let endtime = item.end_date.substring(0,5)
+            return [
+                { text: i + 1, alignment: 'center'}, item.tname, item.dept_name, item.location, 
+                { text: item.tcount, alignment: 'center' } , 
+                  item.detail,
+                  item.keeper_name,
+                { text: starttime, alignment: 'center' } , 
+                { text: endtime, alignment: 'center' }  ];
         });
 
         bodyTable.unshift(tableHeader);
@@ -433,17 +444,18 @@ const AdminCar_ = () => {
             // watermark: { text: 'ทดสอบ', color: 'grey', opacity: 0.3, fontSize: 20, angle: 45 },
             pageSize: 'A4',
             pageOrientation: 'landscape',
-            pageMargins: [30, 20, 30, 10], //default 10 //[left,top,right,bottom]
+            pageMargins: [10, 20, 30, 10], //default 10 //[left,top,right,bottom]
             content: [
                 { text: 'รายการผู้ขอใช้รถราชการที่อนุมัติแล้ว', fontSize: 18, alignment: 'center', decoration: 'underline' },
                 { text: `วันที่  ${moment(formData.filter_date).format('LL').replace('2023', '2566')}  `, fontSize: 16, alignment: 'center' },
                 // { text: `วันที่....${moment().format('LL').replace('2023', '2566')}.......`, fontSize: 16, alignment: 'right', marginTop: 20 },
                 {
                     // layout: 'noBorders',//lightHorizontalLines noBorders 
+                    fontSize: 14,
                     table: {
                         // heights: 12,
                         headerRows: 1,
-                        widths: [30, '*', '*', '*', 100, 100],
+                        widths: [30, 120, 110, '*', 40, '*',80, 40, 40],
                         body: bodyTable
                     }
                 }
@@ -520,8 +532,8 @@ const AdminCar_ = () => {
                             <Printer className="top-menu__sub-icon  lucide lucide-box w-5 h-5 mr-2" size={20} />
                             <div>พิมพ์</div>
                         </button>
-                        <button class="btn btn btn-danger mr-2 ml-2 btn-sm"  onClick={getNotApprove} >
-                           
+                        <button class="btn btn btn-danger mr-2 ml-2 btn-sm" onClick={getNotApprove} >
+
                             <div>ไม่อนุมัติ</div>
                         </button>
 
