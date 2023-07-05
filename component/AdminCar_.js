@@ -460,6 +460,17 @@ const AdminCar_ = () => {
         }).open()
     }
 
+
+    const getNotApprove = async () => {
+        const token = localStorage.getItem("token");
+        try {
+            let res = await axios.get(`${BASE_URL}/get-not-approve`, { headers: { "token": token } })
+            setData(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div>
             <div className="intro-y    h-10  mt-5">
@@ -508,6 +519,10 @@ const AdminCar_ = () => {
                         <button class="btn btn btn-outline-danger mr-2 ml-2 btn-sm" onClick={onPdf}>
                             <Printer className="top-menu__sub-icon  lucide lucide-box w-5 h-5 mr-2" size={20} />
                             <div>พิมพ์</div>
+                        </button>
+                        <button class="btn btn btn-danger mr-2 ml-2 btn-sm"  onClick={getNotApprove} >
+                           
+                            <div>ไม่อนุมัติ</div>
                         </button>
 
                     </div>
