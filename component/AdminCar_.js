@@ -369,24 +369,42 @@ const AdminCar_ = () => {
     };
 
     const onPdf = async () => {
-        let d = {}
+        let d = []
 
-        if(formData.filter_date == null || formData.filter_date == ''){
+        if (formData.filter_date == null || formData.filter_date == '') {
             errorFilterDate('error')
             return;
         }
 
         const token = localStorage.getItem("token");
         try {
-            let res = await axios.get(`${BASE_URL}/get-report-reserve/${id}`, {
+            let res = await axios.get(`${BASE_URL}/get-reserve-report2/${formData.filter_date}`, {
                 headers: { token: token },
             });
-            d = res.data[0]
-            // console.log(res.data[0])
+            d = res.data
+            // console.log(res.data)
         } catch (error) {
             console.log(error);
         }
 
+
+        const tableHeader = [
+            { text: 'ลำดับ', alignment: 'center', bold: true },
+            { text: 'ผู้ขอ', alignment: 'left', bold: true },
+            { text: 'หน่วยงาน', alignment: 'center', bold: true },
+            { text: 'สถานที่', alignment: 'center', bold: true },
+            { text: 'วันเวลาเดินทาง', alignment: 'center', bold: true },
+            { text: 'วันเวลากลับ', alignment: 'center', bold: true },
+
+        ]
+
+        console.log(d)
+        let bodyTable = [];
+        bodyTable = d.map((item, i) => {
+            return [{ text: i + 1, alignment: 'center', bold: true }, item.tname, item.dept_name, item.location, item.start_date, item.end_date];
+        });
+
+        bodyTable.unshift(tableHeader);
 
 
 
@@ -417,9 +435,18 @@ const AdminCar_ = () => {
             pageOrientation: 'landscape',
             pageMargins: [30, 20, 30, 10], //default 10 //[left,top,right,bottom]
             content: [
-                { text: 'รายการผู้ขอใช้รถราชการ', fontSize: 18, alignment: 'center', decoration: 'underline' },
+                { text: 'รายการผู้ขอใช้รถราชการที่อนุมัติแล้ว', fontSize: 18, alignment: 'center', decoration: 'underline' },
                 { text: `วันที่  ${moment(formData.filter_date).format('LL').replace('2023', '2566')}  `, fontSize: 16, alignment: 'center' },
                 // { text: `วันที่....${moment().format('LL').replace('2023', '2566')}.......`, fontSize: 16, alignment: 'right', marginTop: 20 },
+                {
+                    // layout: 'noBorders',//lightHorizontalLines noBorders 
+                    table: {
+                        // heights: 12,
+                        headerRows: 1,
+                        widths: [30, '*', '*', '*', 100, 100],
+                        body: bodyTable
+                    }
+                }
 
 
             ],
