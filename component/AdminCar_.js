@@ -455,7 +455,7 @@ const AdminCar_ = () => {
                     table: {
                         // heights: 12,
                         headerRows: 1,
-                        widths: [30, 120, 110, '*', 40, '*',80, 40, 40],
+                        widths: [30, 120, 110, 140, 40, 140,80, 40, 40],
                         body: bodyTable
                     }
                 }
