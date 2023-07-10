@@ -162,7 +162,7 @@ const Dashboard = () => {
                                         </div> */}
                                     </div>
                                     <div className="text-3xl font-medium leading-8 mt-6">{data[0].sumBossAdmin}</div>
-                                    <div className="text-base text-slate-500 mt-1">รอหัวหน้าอนุมัติ</div>
+                                    <div className="text-base text-slate-500 mt-1">รอรองบริหารอนุมัติ</div>
                                 </div>
                             </div>
                         </div>
