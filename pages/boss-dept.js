@@ -20,7 +20,7 @@ const BossDept = () => {
   }, []);
   return (
     <Hoc>
-      {role == 'boss_dept' || role == 'superadmin' || role == ''  ?
+      {role == 'boss_dept' || role == 'superadmin' || role == '' || role == 'boss_admin'  ?
         <BossDept_ /> : <Permission_ />}
     </Hoc>
   )
