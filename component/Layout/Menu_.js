@@ -12,10 +12,15 @@ import {
   Car,
   Figma,
   Codesandbox,
-  UserCheck
+  UserCheck,
+  FileText
 } from "lucide-react";
 import Link from "next/link";
 import jwt_decode from "jwt-decode";
+import config from "../../config";
+
+const BASE_URL = config.BASE_URL;
+
 
 const Menu_ = () => {
   const router = useRouter();
@@ -211,6 +216,18 @@ const Menu_ = () => {
             </ul>
           </li>
           : ''}
+        <li >
+          <a href={`${BASE_URL}/doc_car.pdf`} className="top-menu" target="_blank">
+            <div className="top-menu__icon">
+              <FileText
+                className="top-menu__sub-icon"
+                color="#164E63"
+                size={22}
+              />
+            </div>
+            <div className="top-menu__title"> คู่มือ </div>
+          </a>
+        </li>
         <li onClick={() => onSelect(9, '/login')}>
           <a href="#" className="top-menu">
             <div className="top-menu__icon">
