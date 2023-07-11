@@ -330,7 +330,7 @@ const Menu_ = () => {
 
                 <div className="col-span-12 lg:col-span-12 mt-3">
                   <label style={{ marginRight: 27 }}></label>
-                  <a href={`${BASE_URL}/doc_line.pdf`} style={{ color : 'blue' }} >การตั้งค่า</a>
+                  <a href={`${BASE_URL}/doc_line.pdf`} style={{ color : 'blue' }} target="_blank" >การตั้งค่า</a>
 
                 </div>
 
