@@ -102,7 +102,6 @@ const BossAdmin_ = () => {
         try {
             let res = await axios.get(`${BASE_URL}/get-approve-boss-admin/${value}`, { headers: { "token": token } })
             setData(res.data)
-            console.log(res.data)
         } catch (error) {
             console.log(error)
         }
@@ -197,7 +196,6 @@ const BossAdmin_ = () => {
                 </div>
                 {/* BEGIN: Users Layout */}
                 {data.map((item, i) => {
-                    console.log(item)
                     return <div className="intro-y col-span-12 md:col-span-3 zoom-in" key={i}>
                         <div className="intro-y box mt-5 lg:mt-0">
                             <div className="relative flex items-center p-5" style={{ backgroundColor: item.boss_admin == null ? 'white' : 'skyblue', borderRadius: 10 }}>

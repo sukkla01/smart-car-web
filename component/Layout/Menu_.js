@@ -13,20 +13,24 @@ import {
   Figma,
   Codesandbox,
   UserCheck,
-  FileText
+  FileText,
+  BellRing
 } from "lucide-react";
 import Link from "next/link";
 import jwt_decode from "jwt-decode";
 import config from "../../config";
-
+import { Modal, Form, Input } from "antd";
+import axios from "axios";
 const BASE_URL = config.BASE_URL;
-
+const { TextArea } = Input;
 
 const Menu_ = () => {
   const router = useRouter();
   const [selectId, setSelectId] = useState(0);
   const [ActiveText, setIsActiveText] = useState("");
   const [isShowMenu, setIsShowMenu] = useState(true);
+  const [open3, setOpen3] = useState(false);
+  const [lineToken, setLineToken] = useState("");
 
   const [role, setRole] = useState('');
 
@@ -54,6 +58,45 @@ const Menu_ = () => {
 
 
   };
+
+  const AddToken = async () => {
+    const token = localStorage.getItem("token");
+    const decoded = jwt_decode(token);
+
+    let post = {
+      username: decoded.username,
+      line_token: lineToken
+    }
+    try {
+      let res = await axios.post(`${BASE_URL}/add-line-token-user`, post, { headers: { "token": token } })
+      setOpen3(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const onCancel = () => {
+    setOpen3(false)
+  }
+
+
+  const getTokenId = async () => {
+    const token = localStorage.getItem("token");
+    const decoded = jwt_decode(token);
+
+    try {
+      let res = await axios.get(`${BASE_URL}/get-user-id/${decoded.username}`, { headers: { "token": token } })
+      console.log(res.data)
+      setLineToken(res.data[0].token_line)
+      setOpen3(true)
+
+    } catch (error) {
+      console.log(error)
+    }
+
+
+
+  }
+
 
   return (
     // <div>
@@ -142,23 +185,25 @@ const Menu_ = () => {
           </a>
         </li>
 
-        <li onClick={() => onSelect(11, '/boss-admin')}>
-          <a
-            href="#"
-            className={selectId == 11 ? "top-menu top-menu--active" : "top-menu"}
-          >
-            <div className="top-menu__icon">
-              <UserCheck
-                className="top-menu__sub-icon"
-                color="#164E63"
-                size={24}
-              />
-            </div>
-            <div className="top-menu__title">
-              รองบริหาร
-            </div>
-          </a>
-        </li>
+        {role == 'boss_admin' || role == 'superadmin' ?
+          <li onClick={() => onSelect(11, '/boss-admin')}>
+            <a
+              href="#"
+              className={selectId == 11 ? "top-menu top-menu--active" : "top-menu"}
+            >
+              <div className="top-menu__icon">
+                <UserCheck
+                  className="top-menu__sub-icon"
+                  color="#164E63"
+                  size={24}
+                />
+              </div>
+              <div className="top-menu__title">
+                รองบริหาร
+              </div>
+            </a>
+          </li> : ''
+        }
         {role == 'admin' || role == 'superadmin' ?
           <li>
             <a href="#" className={selectId == 4 ? "top-menu top-menu--active" : "top-menu"}>
@@ -228,6 +273,18 @@ const Menu_ = () => {
             <div className="top-menu__title"> คู่มือ </div>
           </a>
         </li>
+        <li onClick={getTokenId}>
+          <a href='#' className="top-menu">
+            <div className="top-menu__icon">
+              <BellRing
+                className="top-menu__sub-icon"
+                color="#164E63"
+                size={22}
+              />
+            </div>
+            <div className="top-menu__title"> Line Notify </div>
+          </a>
+        </li>
         <li onClick={() => onSelect(9, '/login')}>
           <a href="#" className="top-menu">
             <div className="top-menu__icon">
@@ -241,6 +298,41 @@ const Menu_ = () => {
           </a>
         </li>
       </ul>
+
+
+      <Modal
+        headStyle={{ backgroundColor: "red" }}
+        title={"บันทึก/แก้ไข Line Token"}
+        // centered
+        open={open3}
+        onOk={AddToken}
+        onCancel={onCancel}
+        width="60%"
+        className="modalStyle2"
+        okText="บันทึก"
+        cancelText="ยกเลิก"
+      >
+        <div className="modal-body " style={{ marginTop: -30 }}>
+          <div className="intro-y  px-5 pt-0 ">
+            <div className="cols-8  ">
+              <Form
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 14 }}
+                layout="horizontal"
+              // initialValues={{ size: componentSize }}
+              // onValuesChange={onFormLayoutChange}
+              >
+                <div className="col-span-12 lg:col-span-12 mt-3">
+                  <label style={{ marginRight: 27 }}></label>
+                  <TextArea value={lineToken} rows={1} placeholder="กรอก Line Token" style={{ width: '80%' }} onChange={(e) => setLineToken(e.target.value)} />
+                </div>
+
+
+              </Form>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </nav>
     // </div>
   );
