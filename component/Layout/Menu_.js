@@ -19,7 +19,7 @@ import {
 import Link from "next/link";
 import jwt_decode from "jwt-decode";
 import config from "../../config";
-import { Modal, Form, Input } from "antd";
+import { Modal, Form, Input, notification } from "antd";
 import axios from "axios";
 const BASE_URL = config.BASE_URL;
 const { TextArea } = Input;
@@ -44,6 +44,17 @@ const Menu_ = () => {
     }
 
   }, []);
+
+
+  const openNotificationWithIconSuccess = (type,text_msg) => {
+    console.log('test')
+    notification[type]({
+      message: "แจ้งเตือน",
+      description: text_msg,
+      duration: 5,
+      style: { backroundColor: "#164E63" },
+    });
+  };
 
 
 
@@ -88,6 +99,32 @@ const Menu_ = () => {
       console.log(res.data)
       setLineToken(res.data[0].token_line)
       setOpen3(true)
+
+    } catch (error) {
+      console.log(error)
+    }
+
+
+
+  }
+
+
+  const sendLine = async () => {
+    const token = localStorage.getItem("token");
+    const decoded = jwt_decode(token);
+
+    let post = {
+      username: decoded.username
+    }
+    try {
+      let res = await axios.post(`${BASE_URL}/user-line-token-test`, post, { headers: { "token": token } })
+      if (JSON.parse(res.data.status).status == 200) {
+
+        openNotificationWithIconSuccess('success','ส่ง Line ทดสอบสำเร็จ')
+      } else {
+        openNotificationWithIconSuccess('error','ไม่สำเร็จ')
+
+      }
 
     } catch (error) {
       console.log(error)
@@ -330,12 +367,13 @@ const Menu_ = () => {
 
                 <div className="col-span-12 lg:col-span-12 mt-3">
                   <label style={{ marginRight: 27 }}></label>
-                  <a href={`${BASE_URL}/doc_line.pdf`} style={{ color : 'blue' }} target="_blank" >การตั้งค่า</a>
+                  <a href={`${BASE_URL}/doc_line.pdf`} style={{ color: 'blue' }} target="_blank" >การตั้งค่า</a>
+                  <span style={{ color: 'Green', marginLeft: 20, cursor: 'pointer' }} onClick={sendLine}  >ทดสอบส่ง Line</span>
 
                 </div>
 
 
-               
+
 
               </Form>
             </div>
