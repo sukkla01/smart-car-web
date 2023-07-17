@@ -746,7 +746,7 @@ const Reserve_ = () => {
 
                                             <div className="col-span-12 lg:col-span-12  mt-3">
                                                 <label style={{ marginRight: 27 }}>รายละเอียด </label>
-                                                <TextArea value={formData.detail} rows={4} placeholder="---รายละเอียด---" style={{ width: '80%' }} onChange={(e) => setFormData({ ...formData, detail: e.target.value })} />
+                                                <Input value={formData.detail}   placeholder="---รายละเอียด---" style={{ width: '80%' }} onChange={(e) => setFormData({ ...formData, detail: e.target.value })} />
                                             </div>
 
                                         </div>
