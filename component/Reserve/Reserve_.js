@@ -268,7 +268,7 @@ const Reserve_ = () => {
             console.log(r)
             setFormData({
                 id: r.id, username: r.username, dept: r.dept, position: r.position, tcount: r.tcount, location: r.location,
-                start_date: r.start_date, start_time: r.start_time, end_date: r.end_date, end_time: r.end_time, detail: r.detail,
+                start_date: r.start_date_c, start_time: r.start_time, end_date: r.enddate_date_c, end_time: r.end_time, detail: r.detail,
                 staff: r.staff
             })
             setOpen(true)
