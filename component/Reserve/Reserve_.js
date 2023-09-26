@@ -355,7 +355,7 @@ const Reserve_ = () => {
                     },
                     marginTop: 0, alignment: 'center'
                 },
-                { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `(ลงชื่อ)..................................................หัวกน้ากลุ่มงาน/ฝ่าย` }],] }, marginTop: 20, alignment: 'center' },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `(ลงชื่อ)..................................................หัวหน้ากลุ่มงาน/ฝ่าย` }],] }, marginTop: 20, alignment: 'center' },
                 {
                     layout: pdfMake.tableLayouts.L1, table: {
                         widths: ['45%', '55%'], body: [[{ text: `` },
