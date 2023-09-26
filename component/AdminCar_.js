@@ -20,6 +20,8 @@ const { Meta } = Card;
 const BASE_URL = config.BASE_URL;
 const socket = io(BASE_URL)
 
+let y_replace = 2023
+
 const AdminCar_ = () => {
     const [data, setData] = useState([]);
     const [dataKeeper, setDataKeeper] = useState([]);
@@ -404,15 +406,15 @@ const AdminCar_ = () => {
         console.log(d)
         let bodyTable = [];
         bodyTable = d.map((item, i) => {
-            let starttime = item.start_date.substring(0,5)
-            let endtime = item.end_date.substring(0,5)
+            let starttime = item.start_date.substring(0, 5)
+            let endtime = item.end_date.substring(0, 5)
             return [
-                { text: i + 1, alignment: 'center'}, item.tname, item.dept_name, item.location, 
-                { text: item.tcount, alignment: 'center' } , 
-                  item.detail,
-                  item.keeper_name,
-                { text: starttime, alignment: 'center' } , 
-                { text: endtime, alignment: 'center' }  ];
+                { text: i + 1, alignment: 'center' }, item.tname, item.dept_name, item.location,
+                { text: item.tcount, alignment: 'center' },
+                item.detail,
+                item.keeper_name,
+                { text: starttime, alignment: 'center' },
+                { text: endtime, alignment: 'center' }];
         });
 
         bodyTable.unshift(tableHeader);
@@ -455,7 +457,7 @@ const AdminCar_ = () => {
                     table: {
                         // heights: 12,
                         headerRows: 1,
-                        widths: [30, 120, 110, 140, 40, 140,80, 40, 40],
+                        widths: [30, 120, 110, 140, 40, 140, 80, 40, 40],
                         body: bodyTable
                     }
                 }
@@ -482,6 +484,127 @@ const AdminCar_ = () => {
             console.log(error)
         }
     }
+
+
+    // print pdf
+    const onPdfBoss = async (id) => {
+        let d = {}
+
+        const token = localStorage.getItem("token");
+        try {
+            let res = await axios.get(`${BASE_URL}/get-report-reserve/${id}`, {
+                headers: { token: token },
+            });
+            d = res.data[0]
+            // console.log(res.data[0])
+        } catch (error) {
+            console.log(error);
+        }
+
+
+
+
+
+
+        pdfMake.tableLayouts = {
+            L1: {
+                defaultBorder: false,
+                paddingTop: function (i, node) {
+                    return 0
+                },
+                paddingBottom: function (i, node) {
+                    return 0
+                },
+                paddingLeft: function (i, node) {
+                    return 0
+                },
+            }
+        };
+
+        pdfMake.createPdf({
+            title: 'ใบขออนุญาตใช้รถ',
+            info: {
+                title: 'ใบขออนุญาตใช้รถ',
+            },
+            // watermark: { text: 'ทดสอบ', color: 'grey', opacity: 0.3, fontSize: 20, angle: 45 },
+            pageSize: 'A4',
+            // pageOrientation: 'landscape',
+            pageMargins: [30, 20, 30, 10], //default 10 //[left,top,right,bottom]
+            content: [
+                { text: 'ใบขออนุญาตใช้รถส่วนกลาง', fontSize: 18, alignment: 'center', decoration: 'underline' },
+                // { text: `วันที่....${moment().format('LL').replace('2023', '2566')}.......`, fontSize: 16, alignment: 'right', marginTop: 20 },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['60%', '40%'], body: [[{ text: `` }, { text: `วันที่ ${moment().format('LL').replace(y_replace, ' พ.ศ. ' + (y_replace + 543))} ` }],] }, marginTop: 20 },
+                { text: `เรียน ผู้อำนวยการโรงพยาบาลศรีสังวรสุโขทัย`, fontSize: 16, alignment: 'left', marginTop: 10 },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['*', '*'], body: [[{ text: `ข้าพเจ้า ${d.staff_reserve}` }, { text: `ตำแหน่ง  ${d.position_name}` }],] }, marginTop: 10, marginLeft: 70 },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `กลุ่มงาน/ฝ่าย  ${d.dept_name}` }, { text: `ขออนุญาตใช้รถไปราชการที่ ${d.location}` }],] } },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['75%', '25%'], body: [[{ text: `เพื่อ ${d.detail}` }, { text: `มีคนนั่ง  ${d.tcount}  คน` }],] } },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['60%', '40%'], body: [[{ text: `โดยออกเดินทางในวันที่ ${moment(d.start_date).format('LL').replace(y_replace, ' พ.ศ. ' + (y_replace + 543))}   ` }, { text: `เวลา ${d.start_time}  น.` }],] } },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['60%', '40%'], body: [[{ text: `และจะกลับในวันที่  ${moment(d.end_date).format('LL').replace(y_replace, ' พ.ศ. ' + (y_replace + 543))}` }, { text: `เวลา  ${d.end_time}  น.` }],] } },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `(ลงชื่อ)..................................................ผู้ขออนุญาต` }],] }, marginTop: 30, alignment: 'center' },
+                {
+                    layout: pdfMake.tableLayouts.L1, table: {
+                        widths: ['45%', '55%'], body: [[{ text: `` },
+                        { text: `( ${d.staff_reserve} )` }],]
+                    },
+                    marginTop: 0, alignment: 'center'
+                },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `(ลงชื่อ)..................................................หัวกน้ากลุ่มงาน/ฝ่าย` }],] }, marginTop: 20, alignment: 'center' },
+                {
+                    layout: pdfMake.tableLayouts.L1, table: {
+                        widths: ['45%', '55%'], body: [[{ text: `` },
+                        { text: `( ${d.boss_dept_name == null ? '..............................................' : d.boss_dept_name} )` }],]
+                    }, marginTop: 0,
+                    alignment: 'center', marginLeft: -100
+                },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `......../........../.......` }],] }, marginTop: 0, alignment: 'center', marginLeft: -100 },
+                {
+                    layout: pdfMake.tableLayouts.L1, table: {
+                        widths: ['50%', '50%'], body: [[
+                            { text: `เห็นควรอนุญาตให้ใช้รถ ${d.type_car == null ? '..........................................................' : d.type_car}` },
+                            { text: `หมายเลขทะเบียน ${d.no_car == null ? '..............................................' : d.no_car}` }],]
+                    }, marginTop: 10
+                },
+                {
+                    layout: pdfMake.tableLayouts.L1, table: {
+                        widths: ['50%', '50%'], body: [[
+                            { text: `โดยให้นาย ${d.keeper_name == null ? '............................................................................' : d.keeper_name} ` },
+                            { text: `เป็นคนขับ` }],]
+                    }
+                },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `(ลงชื่อ)..................................................ผู้จัดรถ` }],] }, marginTop: 20, alignment: 'center' },
+                {
+                    layout: pdfMake.tableLayouts.L1, table: {
+                        widths: ['45%', '55%'], body: [[{ text: `` },
+                        { text: `( ${d.admin_approve_name == null ? '..............................................' : d.admin_approve_name} )` }],]
+                    },
+                    marginTop: 0, alignment: 'center', marginLeft: -50
+                },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `......../........../.......` }],] }, marginTop: 0, alignment: 'center', marginLeft: -50 },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['50%', '50%'], body: [[{ text: `` }, { text: `คำสั่ง อนุญาต` }],] }, marginTop: 10, alignment: 'left', marginLeft: -50 },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `(ลงชื่อ)..................................................ผู้อนุญาต` }],] }, marginTop: 20, alignment: 'center' },
+                {
+                    layout: pdfMake.tableLayouts.L1, table: {
+                        widths: ['45%', '55%'], body: [[{ text: `` },
+                        { text: `( เธียรชัย กิจสนาโยธิน )` }],]
+                    },
+                    marginTop: 0, alignment: 'center', marginLeft: -50
+                },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `......../........../.......` }],] }, marginTop: 0, alignment: 'center', marginLeft: -50 },
+
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['100%', '0%'], body: [[{ text: `*หมายเหตุ  ผู้ขออนุญาตใช้รถและผู้ควบคุมรถ ถ้าสั่งให้รถออกนอกเส้นทางที่อนุญาตต้องรับผิดชอบทุกกรณี` }, { text: `` }],] }, marginTop: 100 },
+
+
+            ],
+
+            defaultStyle: {
+                font: 'THSarabunNew',
+                // bold : true,
+                // italics : true,
+                fontSize: 16
+            }
+        }).open()
+    }
+    // end print pdf
 
     return (
         <div>
@@ -556,10 +679,11 @@ const AdminCar_ = () => {
                                     <div className="text-slate-500">{item.dept_name}</div>
                                 </div>
                                 <div className="dropdown">
-                                    <a className="dropdown-toggle w-5 h-5 block" href="javascript:;" aria-expanded="false" data-tw-toggle="dropdown"> <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" icon-name="more-horizontal" data-lucide="more-horizontal" className="lucide lucide-more-horizontal w-5 h-5 text-slate-500"><circle cx={12} cy={12} r={1} /><circle cx={19} cy={12} r={1} /><circle cx={5} cy={12} r={1} /></svg> </a>
-                                    <div className="dropdown-menu w-56">
-
-                                    </div>
+                                    <Printer
+                                        className="top-menu__sub-icon "
+                                        size={20}
+                                        onClick={()=>onPdfBoss(item.id)}
+                                    />
                                 </div>
                             </div>
                             <div className="p-5 border-t border-slate-200/60 dark:border-darkmode-400">
