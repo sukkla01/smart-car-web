@@ -398,7 +398,7 @@ const Reserve_ = () => {
                 },
                 { layout: pdfMake.tableLayouts.L1, table: { widths: ['45%', '55%'], body: [[{ text: `` }, { text: `......../........../.......` }],] }, marginTop: 0, alignment: 'center', marginLeft: -50 },
 
-                { layout: pdfMake.tableLayouts.L1, table: { widths: ['100%', '0%'], body: [[{ text: `*หมายเหตุ  ผู้ขออนุญาตใช้รถและผู้ควบคุมรถ ถ้าสั่งให้รถออกนอกเส้นทางที่อนุญาตต้องรับผิดชอบทุกกรณี` }, { text: `` }],] }, marginTop: 100 },
+                { layout: pdfMake.tableLayouts.L1, table: { widths: ['100%', '0%'], body: [[{ text: `*หมายเหตุ  ผู้ขออนุญาตใช้รถและผู้ควบคุมรถ ถ้าสั่งให้รถออกนอกเส้นทางที่อนุญาตต้องรับผิดชอบทุกกรณี` }, { text: `` }],] }, marginTop: 90 },
 
 
             ],
@@ -746,7 +746,7 @@ const Reserve_ = () => {
 
                                             <div className="col-span-12 lg:col-span-12  mt-3">
                                                 <label style={{ marginRight: 27 }}>รายละเอียด </label>
-                                                <Input value={formData.detail}   placeholder="---รายละเอียด---" style={{ width: '80%' }} onChange={(e) => setFormData({ ...formData, detail: e.target.value })} />
+                                                <Input value={formData.detail} placeholder="---รายละเอียด---" style={{ width: '80%' }} onChange={(e) => setFormData({ ...formData, detail: e.target.value })} />
                                             </div>
 
                                         </div>
