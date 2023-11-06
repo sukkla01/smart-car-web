@@ -4,7 +4,7 @@ const config = {
     // BASE_URL: 'http://localhost:4090',
     // BASE_URL: 'http://192.168.0.29:4090',//
 }
-
+// ddd
 
 
 export default config
