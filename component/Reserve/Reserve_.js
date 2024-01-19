@@ -402,6 +402,7 @@ const Reserve_ = () => {
 
 
             ],
+            footer : function(currentPage, pageCount) { return currentPage.toString() + ' of ' + pageCount; },
 
             defaultStyle: {
                 font: 'THSarabunNew',
