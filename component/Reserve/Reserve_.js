@@ -392,7 +392,7 @@ const Reserve_ = () => {
                 {
                     layout: pdfMake.tableLayouts.L1, table: {
                         widths: ['45%', '55%'], body: [[{ text: `` },
-                        { text: `( เธียรชัย กิจสนาโยธิน )` }],]
+                        { text: `( สมเจตน์ ชัยเจริญ )` }],]
                     },
                     marginTop: 0, alignment: 'center', marginLeft: -50
                 },
@@ -402,7 +402,7 @@ const Reserve_ = () => {
 
 
             ],
-            footer : function(currentPage, pageCount) { return currentPage.toString() + ' of ' + pageCount; },
+            footer: function (currentPage, pageCount) { return currentPage.toString() + ' of ' + pageCount; },
 
             defaultStyle: {
                 font: 'THSarabunNew',

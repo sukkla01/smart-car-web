@@ -585,7 +585,7 @@ const AdminCar_ = () => {
                 {
                     layout: pdfMake.tableLayouts.L1, table: {
                         widths: ['45%', '55%'], body: [[{ text: `` },
-                        { text: `( เธียรชัย กิจสนาโยธิน )` }],]
+                        { text: `( สมเจตน์ ชัยเจริญ )` }],]
                     },
                     marginTop: 0, alignment: 'center', marginLeft: -50
                 },
@@ -682,7 +682,7 @@ const AdminCar_ = () => {
                                     <Printer
                                         className="top-menu__sub-icon "
                                         size={20}
-                                        onClick={()=>onPdfBoss(item.id)}
+                                        onClick={() => onPdfBoss(item.id)}
                                     />
                                 </div>
                             </div>
