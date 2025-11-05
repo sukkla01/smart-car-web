@@ -585,7 +585,7 @@ const AdminCar_ = () => {
                 {
                     layout: pdfMake.tableLayouts.L1, table: {
                         widths: ['45%', '55%'], body: [[{ text: `` },
-                        { text: `( สมเจตน์ ชัยเจริญ )` }],]
+                        { text: `( นายสมเจตน์ ชัยเจริญ )` }],]
                     },
                     marginTop: 0, alignment: 'center', marginLeft: -50
                 },
